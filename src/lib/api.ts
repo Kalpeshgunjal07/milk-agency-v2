@@ -40,24 +40,25 @@ const BACKUPS_STORAGE_KEY = 'milk_agency_backups_v2';
 export const DEFAULT_AUTH_SETTINGS: AuthSettings = {
   email: 'aniketkorade1995@gmail.com',
   pin: '1995',
-  agency_id: 'VINAYSHIL-KRUSHI',
+  agency_id: 'SATVIK-MILK-AGENCY',
   last_login_at: new Date().toISOString(),
 };
 
 export const DEFAULT_AGENCY_SETTINGS: AgencySettings = {
   id: 1,
-  agency_name: 'VINAYSHIL KRUSHI',
+  agency_name: 'Satvik Milk Agency',
   owner_name: 'Aniket Korade',
   owner_email: 'aniketkorade1995@gmail.com',
   security_pin: '1995',
-  mobile: '9766691327',
-  address: 'KRUSHIVAIBHAV, A/P-RAJURI, TAL. JUNNAR, PUNE 412411',
+  mobile: '8600732906',
+  address: 'AT- GULUCHWADI POST- BELHE, Gulunchwadi, Junnar, Pune Rural, Maharashtra - 412410',
   currency: 'INR',
-  receipt_brand_line: 'FARMERS PRODUCER COMPANY LTD.',
-  receipt_phone: '9766691327',
-  receipt_gst: '27AAICV6354P1ZH',
+  receipt_brand_line: '',
+  receipt_phone: '8600732906',
+  receipt_gst: '',
   default_receipt_footer: 'Thank you for doing business with us.',
   receipt_header_color: '#00A8E8',
+  logo_path: '/agency-logo.png',
 };
 
 interface StoredDatabasePayload {
@@ -84,7 +85,7 @@ let mockPayments: PaymentRecord[] = [];
 let mockLedger: LedgerEntryRecord[] = [];
 let mockInvoices: InvoiceRecord[] = [];
 
-const CLEAN_STORAGE_FLAG = 'milk_agency_clean_v4';
+const CLEAN_STORAGE_FLAG = 'milk_agency_clean_v5';
 
 /**
  * Load database from client device's persistent storage.
@@ -95,7 +96,8 @@ function loadDatabaseFromDevice(): void {
   try {
     const isCleaned = window.localStorage.getItem(CLEAN_STORAGE_FLAG);
     if (!isCleaned) {
-      // First boot on clean version 4: purge all dummy demonstration records AND dummy products
+      // First boot on clean version 5: set Satvik Milk Agency defaults & purge any legacy dummy data
+      mockAgencySettings = { ...DEFAULT_AGENCY_SETTINGS };
       mockCustomers = [];
       mockProducts = [];
       mockDeliveries = [];
@@ -121,6 +123,7 @@ function loadDatabaseFromDevice(): void {
         );
 
         if (hasDummyCusts || hasDummyProds) {
+          mockAgencySettings = { ...DEFAULT_AGENCY_SETTINGS };
           mockCustomers = [];
           mockProducts = [];
           mockDeliveries = [];
@@ -146,6 +149,7 @@ function loadDatabaseFromDevice(): void {
       }
     }
     // Default clean state
+    mockAgencySettings = { ...DEFAULT_AGENCY_SETTINGS };
     mockCustomers = [];
     mockProducts = [];
     mockDeliveries = [];

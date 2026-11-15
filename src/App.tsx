@@ -52,15 +52,19 @@ export function App() {
 
   // Core Data State
   const [agencySettings, setAgencySettings] = useState<AgencySettings>({
-    agency_name: 'VINAYSHIL KRUSHI FARMERS PRODUCER COMPANY LTD.',
-    owner_name: 'Agency Owner',
-    mobile: '9766691327',
-    address: 'KRUSHIVAIBHAV, A/P-RAJURI, TAL. JUNNAR, PUNE 412411',
+    agency_name: 'Satvik Milk Agency',
+    owner_name: 'Aniket Korade',
+    owner_email: 'aniketkorade1995@gmail.com',
+    security_pin: '1995',
+    mobile: '8600732906',
+    address: 'AT- GULUCHWADI POST- BELHE, Gulunchwadi, Junnar, Pune Rural, Maharashtra - 412410',
     currency: 'INR',
-    receipt_brand_line: 'FARMERS PRODUCER COMPANY LTD.',
-    receipt_phone: '9766691327',
-    receipt_gst: '27AAICV6354P1ZH',
+    receipt_brand_line: '',
+    receipt_phone: '8600732906',
+    receipt_gst: '',
     default_receipt_footer: 'Thank you for doing business with us.',
+    receipt_header_color: '#00A8E8',
+    logo_path: '/agency-logo.png',
   });
   const [backupSettings, setBackupSettings] = useState<BackupSettings>({
     auto_backup_enabled: true,
