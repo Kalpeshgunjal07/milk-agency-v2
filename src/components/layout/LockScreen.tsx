@@ -76,13 +76,14 @@ export const LockScreen: React.FC<LockScreenProps> = ({
         </div>
 
         <h2 className="text-base font-bold text-white tracking-tight">{agencyName}</h2>
-        <p className="text-xs text-slate-400 font-normal mt-0.5">Application Security Lock</p>
+        <p className="text-xs text-blue-400 font-medium mt-0.5">Agency Sign In & Security Lock</p>
 
         {/* Authenticated Account Badge */}
         <div className="mt-3.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700/80 text-[11px] text-slate-300 font-mono">
           <Mail className="w-3 h-3 text-blue-400 shrink-0" />
           <span className="truncate max-w-[210px]">{userEmail}</span>
         </div>
+        <p className="text-[11px] text-slate-400 mt-2">Enter 4-digit security PIN to log in</p>
 
         {/* PIN Indicator Dots */}
         <div className="flex justify-center gap-3 my-5">
