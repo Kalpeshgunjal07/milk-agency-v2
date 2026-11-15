@@ -6,6 +6,7 @@ import {
   DeliveryRecord,
   DeliveryScheduleRecord,
   LedgerEntryRecord,
+  PaymentRecord,
   ProductRecord,
 } from '../../types/models';
 import { Button } from '../../components/ui/Button';
@@ -48,6 +49,7 @@ interface DailyDeliveryViewProps {
   products: ProductRecord[];
   schedules: DeliveryScheduleRecord[];
   deliveries: DeliveryRecord[];
+  payments?: PaymentRecord[];
   ledgerEntries?: LedgerEntryRecord[];
   agencySettings?: AgencySettings | null;
   onBatchConfirm: (batch: DeliveryInput[]) => Promise<void>;
@@ -73,6 +75,7 @@ export const DailyDeliveryView: React.FC<DailyDeliveryViewProps> = ({
   products,
   schedules,
   deliveries,
+  payments,
   ledgerEntries,
   agencySettings,
   onBatchConfirm,
@@ -323,7 +326,7 @@ export const DailyDeliveryView: React.FC<DailyDeliveryViewProps> = ({
       return;
     }
     setSharingCustomerId(r.customerId);
-    const effectiveAgencyName = agencySettings?.agency_name || 'VINAYSHIL KRUSHI';
+    const effectiveAgencyName = agencySettings?.agency_name || 'Satvik Milk Agency';
     try {
       const lineItems = Object.entries(r.items)
         .filter(([_, qty]) => qty > 0)
@@ -343,11 +346,17 @@ export const DailyDeliveryView: React.FC<DailyDeliveryViewProps> = ({
           };
         });
 
+      const todayPayments = (payments || []).filter(
+        (p) => p.customer_id === r.customerId && p.payment_date === selectedDate && p.status !== 'failed'
+      );
+      const paymentRecd = todayPayments.reduce((sum, p) => sum + p.amount, 0);
+
       const custLedger = (ledgerEntries || []).filter((e) => e.customer_id === r.customerId);
+      const custObj = customers.find((c) => c.id === r.customerId);
       const closingBal = custLedger.length
         ? custLedger[custLedger.length - 1].running_balance
-        : r.totalAmountPaise;
-      const prevBal = closingBal - r.totalAmountPaise;
+        : (custObj?.opening_balance ?? 0) + r.totalAmountPaise - paymentRecd;
+      const prevBal = closingBal - r.totalAmountPaise + paymentRecd;
 
       const dateStr = selectedDate.replace(/-/g, '');
       const receiptCode = `RCP-${dateStr}-${r.customerCode}`;
@@ -384,7 +393,7 @@ export const DailyDeliveryView: React.FC<DailyDeliveryViewProps> = ({
           items: lineItems,
           todayTotal: r.totalAmountPaise,
           previousBalance: prevBal,
-          paymentReceived: 0,
+          paymentReceived: paymentRecd,
           closingBalance: closingBal,
           footerNote: agencySettings?.default_receipt_footer,
           headerColor,
@@ -414,7 +423,7 @@ export const DailyDeliveryView: React.FC<DailyDeliveryViewProps> = ({
             items={lineItems}
             todayTotal={r.totalAmountPaise}
             previousBalance={prevBal}
-            paymentReceived={0}
+            paymentReceived={paymentRecd}
             closingBalance={closingBal}
             footerNote={agencySettings?.default_receipt_footer}
             headerColor={headerColor}

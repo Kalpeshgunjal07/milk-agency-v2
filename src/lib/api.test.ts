@@ -142,4 +142,59 @@ describe('Client Device Database Storage & Auth Suite', () => {
     expect(refreshed.length).toBe(1);
     expect(refreshed[0].name).toBe('Production Real Customer');
   });
+
+  it('immediately credits and reduces customer balance when customer pays at delivery', async () => {
+    await api.clearDatabaseToCleanState();
+
+    // 1. Create a customer with 0 opening balance
+    const cust = await api.upsertCustomer({
+      name: 'Santosh Pawar',
+      mobile: '9822001122',
+      joining_date: '2026-11-15',
+      opening_balance: 0,
+      status: 'active',
+    });
+
+    // 2. Customer has a delivery of ₹120 (12000 paise)
+    await api.upsertDelivery({
+      customer_id: cust.id,
+      product_id: 1,
+      delivery_date: '2026-11-15',
+      session_key: 'morning',
+      status: 'confirmed',
+      total_quantity: 2,
+      total_amount: 12000,
+    });
+
+    // Verify balance is now 12000 paise due
+    let custLedger = await api.listLedgerEntries(cust.id);
+    expect(custLedger[custLedger.length - 1].running_balance).toBe(12000);
+
+    // 3. Customer pays ₹100 (10000 paise) at delivery
+    await api.upsertPayment({
+      customer_id: cust.id,
+      payment_date: '2026-11-15',
+      amount: 10000,
+      payment_method: 'cash',
+      status: 'posted',
+      notes: 'Instant payment at delivery (Morning)',
+    });
+
+    // 4. Verify balance is immediately reduced to 2000 paise (120 - 100 = 20)
+    custLedger = await api.listLedgerEntries(cust.id);
+    expect(custLedger[custLedger.length - 1].running_balance).toBe(2000);
+
+    // 5. Customer pays remainder ₹20 (2000 paise)
+    await api.upsertPayment({
+      customer_id: cust.id,
+      payment_date: '2026-11-15',
+      amount: 2000,
+      payment_method: 'upi',
+      status: 'confirmed', // test with 'confirmed' status as well
+      notes: 'Instant payment at delivery (Evening)',
+    });
+
+    custLedger = await api.listLedgerEntries(cust.id);
+    expect(custLedger[custLedger.length - 1].running_balance).toBe(0);
+  });
 });

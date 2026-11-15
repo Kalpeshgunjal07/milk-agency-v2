@@ -507,6 +507,7 @@ export function App() {
               products={products}
               schedules={schedules}
               deliveries={deliveries}
+              payments={payments}
               ledgerEntries={ledgerEntries}
               agencySettings={agencySettings}
               onBatchConfirm={handleBatchConfirmDeliveries}

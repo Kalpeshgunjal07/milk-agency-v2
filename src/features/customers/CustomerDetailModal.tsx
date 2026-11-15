@@ -89,7 +89,7 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
   const handleShareDeliverySlip = async (d: DeliveryRecord) => {
     if (!customer?.mobile) return;
     setSharingDeliveryId(d.id || null);
-    const effectiveAgencyName = agencySettings?.agency_name || 'VINAYSHIL KRUSHI';
+    const effectiveAgencyName = agencySettings?.agency_name || 'Satvik Milk Agency';
     try {
       const lineItems = (d.items || []).map((it) => ({
         name: it.product_name_snapshot,

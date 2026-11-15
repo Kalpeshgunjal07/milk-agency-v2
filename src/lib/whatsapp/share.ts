@@ -22,11 +22,11 @@ export interface InvoiceShareMessageData {
  * [Agency Phone]
  */
 export function formatInvoiceWhatsAppMessage(data: InvoiceShareMessageData): string {
-  let agency = (data.agencyName || 'VINAYSHIL KRUSHI').trim();
+  let agency = (data.agencyName || 'Satvik Milk Agency').trim();
   if (data.agencyBrandLine && !agency.toLowerCase().includes(data.agencyBrandLine.toLowerCase())) {
     agency = `${agency} ${data.agencyBrandLine}`.trim();
   }
-  const phone = data.agencyPhone || '9766691327';
+  const phone = data.agencyPhone || '8600732906';
   const formattedAmount = (Math.abs(data.amountPaise) / 100).toLocaleString('en-IN', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

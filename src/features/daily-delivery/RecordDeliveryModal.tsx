@@ -296,7 +296,7 @@ export const RecordDeliveryModal: React.FC<RecordDeliveryModalProps> = ({
           payment_method: paymentMethod,
           reference_no: paymentRef.trim() || undefined,
           notes: `Instant payment at delivery (${sessionKey === 'morning' ? 'Morning' : 'Evening'})`,
-          status: 'confirmed',
+          status: 'posted',
         };
       }
 
@@ -306,7 +306,7 @@ export const RecordDeliveryModal: React.FC<RecordDeliveryModalProps> = ({
       if (sendWhatsApp && selectedCustomer?.mobile) {
         try {
           const closingBal = prevBal + totals.totalAmountPaise - paymentAmountPaise;
-          const effectiveAgencyName = agencySettings?.agency_name || 'VINAYSHIL KRUSHI';
+          const effectiveAgencyName = agencySettings?.agency_name || 'Satvik Milk Agency';
           const effectiveLogo = agencySettings?.logo_path || AGENCY_LOGO_BASE64;
           const receiptCode = `RCP-${deliveryDate.replace(/-/g, '')}-${customerId}`;
           const headerColor = agencySettings?.receipt_header_color || '#00A8E8';

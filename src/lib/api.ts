@@ -190,6 +190,7 @@ function saveDatabaseToDevice(): void {
 
 // Initial load on script execution
 loadDatabaseFromDevice();
+syncMissingPaymentLedgerEntries();
 
 function recalculateCustomerLedger(customerId: number) {
   const cust = mockCustomers.find((c) => c.id === customerId);
@@ -207,6 +208,41 @@ function recalculateCustomerLedger(customerId: number) {
   }
 }
 
+/**
+ * Self-healing sync to ensure every valid payment collected at delivery
+ * has a corresponding credit entry in the customer ledger.
+ */
+function syncMissingPaymentLedgerEntries(): void {
+  let changed = false;
+  for (const pay of mockPayments) {
+    if (pay.amount > 0 && pay.status !== 'failed' && pay.status !== 'pending') {
+      const hasEntry = mockLedger.some(
+        (l) => l.related_entity_type === 'payments' && l.related_entity_id === pay.id
+      );
+      if (!hasEntry) {
+        mockLedger.push({
+          id: mockLedger.length + 1,
+          customer_id: pay.customer_id,
+          transaction_type: 'payment',
+          related_entity_type: 'payments',
+          related_entity_id: pay.id,
+          description: pay.notes || `Payment received via ${(pay.payment_method || 'cash').toUpperCase()}`,
+          debit_amount: 0,
+          credit_amount: pay.amount,
+          running_balance: 0,
+          reference: pay.reference_no || `PAY-${pay.id}`,
+          created_at: pay.created_at || new Date().toISOString(),
+        });
+        recalculateCustomerLedger(pay.customer_id);
+        changed = true;
+      }
+    }
+  }
+  if (changed) {
+    saveDatabaseToDevice();
+  }
+}
+
 export const api = {
   // System & Database Status
   initializeDatabase: async (): Promise<DatabaseStatus> => {
@@ -214,6 +250,7 @@ export const api = {
       return await invoke<DatabaseStatus>('initialize_database');
     }
     loadDatabaseFromDevice();
+    syncMissingPaymentLedgerEntries();
     return {
       initialized: true,
       database_path: 'Device LocalStorage (Persistent Client Storage)',
@@ -776,9 +813,12 @@ export const api = {
     } else {
       mockDeliveries.unshift(rec);
       if (rec.status === 'confirmed' && rec.total_amount > 0) {
-        const prevBal = mockLedger
-          .filter((l) => l.customer_id === delivery.customer_id)
-          .slice(-1)[0]?.running_balance ?? 0;
+        const custEntries = mockLedger.filter((l) => l.customer_id === delivery.customer_id);
+        const custObj = mockCustomers.find((c) => c.id === delivery.customer_id);
+        const prevBal = custEntries.length
+          ? custEntries[custEntries.length - 1].running_balance
+          : (custObj?.opening_balance ?? 0);
+
         mockLedger.push({
           id: mockLedger.length + 1,
           customer_id: delivery.customer_id,
@@ -792,6 +832,7 @@ export const api = {
           reference: `DEL-${targetId}`,
           created_at: new Date().toISOString(),
         });
+        recalculateCustomerLedger(delivery.customer_id);
       }
     }
 
@@ -868,30 +909,35 @@ export const api = {
       return mockPayments.find((p) => p.id === payment.id)!;
     }
     const newId = payment.id || (mockPayments.length ? Math.max(...mockPayments.map((p) => p.id || 0)) + 1 : 1);
+    const effectiveStatus = (payment.status === 'pending' || payment.status === 'failed') ? payment.status : 'posted';
     const rec: PaymentRecord = {
       ...payment,
       id: newId,
-      status: payment.status || 'posted',
+      status: effectiveStatus,
       created_at: new Date().toISOString(),
     };
     mockPayments.unshift(rec);
-    if (rec.status === 'posted' && payment.amount > 0) {
-      const prevBal = mockLedger
-        .filter((l) => l.customer_id === payment.customer_id)
-        .slice(-1)[0]?.running_balance ?? 0;
+    if (effectiveStatus === 'posted' && payment.amount > 0) {
+      const custEntries = mockLedger.filter((l) => l.customer_id === payment.customer_id);
+      const custObj = mockCustomers.find((c) => c.id === payment.customer_id);
+      const prevBal = custEntries.length
+        ? custEntries[custEntries.length - 1].running_balance
+        : (custObj?.opening_balance ?? 0);
+
       mockLedger.push({
         id: mockLedger.length + 1,
         customer_id: payment.customer_id,
         transaction_type: 'payment',
         related_entity_type: 'payments',
         related_entity_id: newId,
-        description: `Payment received via ${payment.payment_method.toUpperCase()}`,
+        description: payment.notes || `Payment received via ${(payment.payment_method || 'cash').toUpperCase()}`,
         debit_amount: 0,
         credit_amount: payment.amount,
         running_balance: prevBal - payment.amount,
-        reference: `PAY-${newId}`,
+        reference: payment.reference_no || `PAY-${newId}`,
         created_at: new Date().toISOString(),
       });
+      recalculateCustomerLedger(payment.customer_id);
     }
     saveDatabaseToDevice();
     return rec;
