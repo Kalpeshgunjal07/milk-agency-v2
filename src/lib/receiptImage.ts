@@ -559,6 +559,7 @@ export interface PaymentReceiptImageOptions {
 }
 
 export async function generatePaymentReceiptImageBlob(options: PaymentReceiptImageOptions): Promise<Blob> {
+  // Ensure Google Fonts (Poppins) are loaded and ready before rendering canvas
   if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
     try {
       await document.fonts.ready;
@@ -567,10 +568,12 @@ export async function generatePaymentReceiptImageBlob(options: PaymentReceiptIma
     }
   }
 
+  // 1. DIMENSIONS: Cut-to-Cut Card Canvas (EXACT same as Delivery Slip)
   const width = 420;
   const padX = 20;
   const rightX = width - padX;
-  const headerColor = options.headerColor || '#059669'; // Emerald green
+  const contentW = rightX - padX; // 380px
+  const headerColor = options.headerColor || '#00A8E8';
   const effectiveLogo = options.logoBase64 || AGENCY_LOGO_BASE64;
   const fontSans = 'Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
 
@@ -585,6 +588,7 @@ export async function generatePaymentReceiptImageBlob(options: PaymentReceiptIma
   const mCtx = measureCanvas.getContext('2d');
   if (!mCtx) throw new Error('Canvas 2D context not available');
 
+  // 2. PRE-MEASURE CONTENT FOR CUT-TO-CUT DYNAMIC HEIGHT
   const logoSize = 64;
   const logoX = rightX - logoSize;
   const maxTextW = logoX - padX - 12;
@@ -603,96 +607,124 @@ export async function generatePaymentReceiptImageBlob(options: PaymentReceiptIma
   agencyBlockH += addressLines.length * 15;
   if (options.agencyMobile) agencyBlockH += 17;
   if (options.receiptGst) agencyBlockH += 15;
-  agencyBlockH = Math.max(agencyBlockH, logoSize);
+  agencyBlockH += 15; // State
+  const agencySectionHeight = Math.max(agencyBlockH, logoSize) + 14;
 
-  const bannerH = 76;
-  const metaH = 58;
-  const paymentDetailsH = 68 + (options.notes ? 18 : 0);
-  const balanceBoxH = 92;
-  const footerH = 34;
+  const bannerHeight = 88;
+  const metaHeight = 10 + 17 + 17 + 17 + 12; // top divider + 3 rows + bottom divider
+  const tableHeaderHeight = 25;
+  const tableRowHeight = 25;
+  const tableBodyHeight = 1 * tableRowHeight;
+  const tableSubtotalHeight = 27;
+  const tableTotalH = tableHeaderHeight + tableBodyHeight + tableSubtotalHeight;
 
-  const totalHeight = bannerH + 16 + agencyBlockH + 16 + metaH + 16 + paymentDetailsH + 16 + balanceBoxH + 14 + footerH + 16;
+  const balanceRowCount = 4;
+  const balanceHeight = 10 + balanceRowCount * 18 + 8;
+  const footerHeight = 12 + 16 + 18; // divider + text + bottom padding
 
+  const totalHeight = Math.round(
+    bannerHeight + 18 + agencySectionHeight + metaHeight + 14 + tableTotalH + balanceHeight + footerHeight
+  );
+
+  // 3. CREATE ULTRA HIGH-DPI CANVAS (3x Retina Scale for Razor-Sharp Text)
+  const scale = 3;
   const canvas = document.createElement('canvas');
-  const pixelRatio = 3;
-  canvas.width = width * pixelRatio;
-  canvas.height = totalHeight * pixelRatio;
+  canvas.width = Math.round(width * scale);
+  canvas.height = Math.round(totalHeight * scale);
 
   const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('Failed to create canvas context');
+  if (!ctx) throw new Error('Canvas 2D context not available');
 
-  ctx.scale(pixelRatio, pixelRatio);
+  ctx.scale(scale, scale);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
+  // 4. CUT-TO-CUT CARD BACKGROUND
   ctx.fillStyle = '#FFFFFF';
   ctx.fillRect(0, 0, width, totalHeight);
 
-  // 1. TOP BANNER
+  // 5. TOP COLOR BANNER (Exact same as delivery slip)
   ctx.fillStyle = headerColor;
-  ctx.fillRect(0, 0, width, bannerH);
+  ctx.fillRect(0, 0, width, bannerHeight);
 
-  ctx.textAlign = 'center';
+  // Label: "Payment received"
   ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-  ctx.font = 'normal 11.5px ' + fontSans;
-  ctx.fillText('Payment received', width / 2, 28);
+  ctx.font = '500 13px ' + fontSans;
+  ctx.textAlign = 'center';
+  ctx.fillText('Payment received', width / 2, 34);
 
+  // Value: "Rs. 100.00"
+  const amountStr = `Rs. ${(options.paymentAmount / 100).toFixed(2)}`;
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 24px ' + fontSans;
-  ctx.fillText(formatPaiseForPDF(options.paymentAmount), width / 2, 58);
+  ctx.font = 'bold 28px ' + fontSans;
+  ctx.fillText(amountStr, width / 2, 70);
 
-  // 2. AGENCY BLOCK
-  let currentY = bannerH + 16;
+  let currentY = bannerHeight + 18;
+
+  // 6. AGENCY HEADER SECTION & CIRCULAR LOGO
+  const logoY = currentY;
+
+  // Draw Circular Logo Badge on Right
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.fillStyle = '#F8FAFC';
+  ctx.fill();
+  ctx.strokeStyle = '#E2E8F0';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
   if (logoImg) {
     ctx.save();
     ctx.beginPath();
-    ctx.arc(logoX + logoSize / 2, currentY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2 - 2, 0, Math.PI * 2);
     ctx.closePath();
     ctx.clip();
-    ctx.drawImage(logoImg, logoX, currentY, logoSize, logoSize);
+    ctx.drawImage(logoImg, logoX + 2, logoY + 2, logoSize - 4, logoSize - 4);
     ctx.restore();
-
-    ctx.beginPath();
-    ctx.arc(logoX + logoSize / 2, currentY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
-    ctx.strokeStyle = '#E2E8F0';
-    ctx.lineWidth = 1;
-    ctx.stroke();
   }
+  ctx.restore();
 
-  let textY = currentY + 13;
+  // Agency Info on Left
   ctx.textAlign = 'left';
-  ctx.fillStyle = '#0F172A';
+  ctx.fillStyle = '#1E293B';
   ctx.font = 'bold 12.5px ' + fontSans;
   for (const line of titleLines) {
-    ctx.fillText(line, padX, textY);
-    textY += 17;
+    ctx.fillText(line, padX, currentY + 12);
+    currentY += 17;
   }
+  currentY += 3;
 
   ctx.fillStyle = '#64748B';
   ctx.font = 'normal 10px ' + fontSans;
   for (const line of addressLines) {
-    ctx.fillText(line, padX, textY);
-    textY += 15;
+    ctx.fillText(line, padX, currentY + 10);
+    currentY += 15;
   }
 
   if (options.agencyMobile) {
     ctx.fillStyle = headerColor;
-    ctx.font = 'bold 10px ' + fontSans;
-    ctx.fillText('Tel: ' + options.agencyMobile, padX, textY);
-    textY += 17;
+    ctx.font = 'bold 11px ' + fontSans;
+    ctx.fillText(`📞 ${options.agencyMobile}`, padX, currentY + 11);
+    currentY += 17;
   }
 
   if (options.receiptGst) {
     ctx.fillStyle = '#64748B';
-    ctx.font = 'normal 9.5px ' + fontSans;
-    ctx.fillText('Company GST : ' + options.receiptGst, padX, textY);
-    textY += 15;
+    ctx.font = 'normal 10px ' + fontSans;
+    ctx.fillText(`Company GST : ${options.receiptGst}`, padX, currentY + 10);
+    currentY += 15;
   }
 
   ctx.fillStyle = '#64748B';
-  ctx.font = 'normal 9.5px ' + fontSans;
-  ctx.fillText(options.agencyState || 'Maharashtra', padX, textY);
+  ctx.font = 'normal 10px ' + fontSans;
+  ctx.fillText(options.agencyState || 'Maharashtra', padX, currentY + 10);
+  currentY += 15;
 
-  currentY += agencyBlockH + 16;
+  currentY = Math.max(currentY, logoY + logoSize) + 14;
 
-  // 3. META SECTION (Received From & Receipt No)
+  // 7. BILL TO & REF SECTION (Exact layout as delivery slip)
   ctx.strokeStyle = '#E2E8F0';
   ctx.lineWidth = 1;
   ctx.beginPath();
@@ -701,38 +733,57 @@ export async function generatePaymentReceiptImageBlob(options: PaymentReceiptIma
   ctx.stroke();
 
   currentY += 10;
+
+  // Row 1: Bill To (Left) & Ref No (Right)
   ctx.textAlign = 'left';
   ctx.fillStyle = headerColor;
   ctx.font = 'bold 10px ' + fontSans;
-  ctx.fillText('Received From:', padX, currentY);
+  ctx.fillText('Bill To:', padX, currentY + 10);
 
-  ctx.fillStyle = '#0F172A';
-  ctx.font = 'bold 12.5px ' + fontSans;
-  ctx.fillText(options.customerName, padX, currentY + 16);
+  const refNumStr = options.receiptNo.replace('RCP-PAY-', '').replace('RCP-', '');
+  ctx.font = 'bold 11.5px ' + fontSans;
+  const refNumWidth = ctx.measureText(refNumStr).width;
+  ctx.font = 'bold 10.5px ' + fontSans;
+  const refLabelWidth = ctx.measureText('Ref No: ').width;
+  const refStartX = rightX - refNumWidth - refLabelWidth;
 
-  ctx.fillStyle = '#64748B';
-  ctx.font = 'normal 9.5px ' + fontSans;
-  const custSub = options.customerCode
-    ? `${options.customerCode}${options.customerMobile ? ' • Tel: ' + options.customerMobile : ''}`
-    : options.customerMobile || '';
-  ctx.fillText(custSub, padX, currentY + 30);
+  ctx.fillStyle = headerColor;
+  ctx.fillText('Ref No: ', refStartX, currentY + 10);
+  ctx.fillStyle = '#1E293B';
+  ctx.font = 'bold 11.5px ' + fontSans;
+  ctx.fillText(refNumStr, refStartX + refLabelWidth, currentY + 10);
 
-  // Right side
+  // Row 2: Customer Name (Left) & Date of Payment (Right)
+  currentY += 17;
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#1E293B';
+  ctx.font = 'bold 13px ' + fontSans;
+  ctx.fillText(options.customerName, padX, currentY + 11);
+
   ctx.textAlign = 'right';
   ctx.fillStyle = headerColor;
   ctx.font = 'bold 10px ' + fontSans;
-  const cleanRef = options.receiptNo.replace('RCP-PAY-', '').replace('RCP-', '');
-  ctx.fillText('Receipt No: ' + cleanRef, rightX, currentY);
+  ctx.fillText('Date of Payment', rightX, currentY + 10);
 
-  ctx.fillStyle = '#64748B';
-  ctx.font = 'normal 9.5px ' + fontSans;
-  ctx.fillText('Date of Payment', rightX, currentY + 15);
+  // Row 3: Customer Phone (Left) & Date Value (Right)
+  currentY += 17;
+  if (options.customerMobile) {
+    ctx.textAlign = 'left';
+    ctx.fillStyle = headerColor;
+    ctx.font = 'normal 10.5px ' + fontSans;
+    ctx.fillText(`📞 ${options.customerMobile}`, padX, currentY + 11);
+  }
 
-  ctx.fillStyle = '#0F172A';
-  ctx.font = 'bold 10.5px ' + fontSans;
-  ctx.fillText(options.date, rightX, currentY + 30);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#1E293B';
+  ctx.font = 'bold 12.5px ' + fontSans;
+  ctx.fillText(options.date, rightX, currentY + 11);
 
-  currentY += metaH - 10;
+  currentY += 15;
+
+  // Bottom divider
+  ctx.strokeStyle = '#E2E8F0';
+  ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(padX, currentY);
   ctx.lineTo(rightX, currentY);
@@ -740,110 +791,165 @@ export async function generatePaymentReceiptImageBlob(options: PaymentReceiptIma
 
   currentY += 14;
 
-  // 4. PAYMENT MODE BOX
-  const boxX = padX;
-  const boxW = rightX - padX;
-  ctx.fillStyle = '#F8FAFC';
-  drawRoundedRectPath(ctx, boxX, currentY, boxW, paymentDetailsH, 8);
-  ctx.fill();
+  // 8. PAYMENT PARTICULARS TABLE (Enclosed Rounded Box matching Delivery Slip)
+  const tableX = padX;
+  const tableW = contentW;
+  const tableRadius = 8;
+
+  const srW = 34; // 34px
+  const descW = 160; // 160px
+  const modeW = 76; // 76px
+  const refW = 50; // 50px
+
+  // Draw Table Container Outline
+  drawRoundedRectPath(ctx, tableX, currentY, tableW, tableTotalH, tableRadius);
   ctx.strokeStyle = '#E2E8F0';
   ctx.lineWidth = 1;
   ctx.stroke();
 
-  const methodLabel =
-    options.paymentMethod === 'cash'
-      ? 'Cash Payment'
-      : options.paymentMethod === 'upi'
-      ? 'UPI / QR Code'
-      : options.paymentMethod === 'bank_transfer'
-      ? 'Bank Transfer'
-      : options.paymentMethod.toUpperCase();
+  // Table Header Background (Soft Slate-200 #E2E8F0)
+  ctx.save();
+  ctx.beginPath();
+  drawTopRoundedRectPath(ctx, tableX, currentY, tableW, tableHeaderHeight, tableRadius);
+  ctx.clip();
+  ctx.fillStyle = '#E2E8F0';
+  ctx.fillRect(tableX, currentY, tableW, tableHeaderHeight);
 
-  let py = currentY + 18;
+  // Header Titles (Uppercase, slate-700 #334155)
+  ctx.fillStyle = '#334155';
+  ctx.font = 'bold 9.5px ' + fontSans;
+
+  ctx.textAlign = 'center';
+  ctx.fillText('SR', tableX + srW / 2, currentY + 16);
+
   ctx.textAlign = 'left';
-  ctx.fillStyle = '#64748B';
-  ctx.font = 'normal 10.5px ' + fontSans;
-  ctx.fillText('Payment Mode', boxX + 12, py);
+  ctx.fillText('PARTICULARS', tableX + srW + 6, currentY + 16);
+
+  ctx.textAlign = 'center';
+  ctx.fillText('MODE', tableX + srW + descW + modeW / 2, currentY + 16);
+  ctx.fillText('REF NO', tableX + srW + descW + modeW + refW / 2, currentY + 16);
 
   ctx.textAlign = 'right';
-  ctx.fillStyle = '#0F172A';
+  ctx.fillText('AMOUNT', tableX + tableW - 6, currentY + 16);
+  ctx.restore();
+
+  currentY += tableHeaderHeight;
+
+  // Table Item Row: 1 Payment Record
+  const methodLabel =
+    options.paymentMethod === 'cash'
+      ? 'Cash'
+      : options.paymentMethod === 'upi'
+      ? 'UPI'
+      : options.paymentMethod === 'bank_transfer'
+      ? 'Bank'
+      : options.paymentMethod.toUpperCase();
+
+  const particularText = options.notes || 'Payment Received';
+
+  ctx.fillStyle = '#64748B';
+  ctx.font = 'normal 10px ' + fontSans;
+  ctx.textAlign = 'center';
+  ctx.fillText('1', tableX + srW / 2, currentY + 16);
+
+  ctx.fillStyle = '#1E293B';
+  ctx.font = '500 11px ' + fontSans;
+  ctx.textAlign = 'left';
+  ctx.fillText(particularText, tableX + srW + 6, currentY + 16);
+
+  ctx.fillStyle = '#334155';
+  ctx.font = '500 11px ' + fontSans;
+  ctx.textAlign = 'center';
+  ctx.fillText(methodLabel, tableX + srW + descW + modeW / 2, currentY + 16);
+
+  ctx.fillStyle = '#475569';
+  ctx.font = 'normal 10.5px ' + fontSans;
+  ctx.fillText(options.referenceNo || '—', tableX + srW + descW + modeW + refW / 2, currentY + 16);
+
+  ctx.fillStyle = '#1E293B';
   ctx.font = 'bold 11px ' + fontSans;
-  ctx.fillText(methodLabel, rightX - 12, py);
+  ctx.textAlign = 'right';
+  ctx.fillText((options.paymentAmount / 100).toFixed(2), tableX + tableW - 6, currentY + 16);
 
-  if (options.referenceNo) {
-    py += 20;
+  // Row Bottom Border
+  ctx.strokeStyle = '#F1F5F9';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(tableX, currentY + tableRowHeight);
+  ctx.lineTo(tableX + tableW, currentY + tableRowHeight);
+  ctx.stroke();
+
+  currentY += tableRowHeight;
+
+  // Table Subtotal Footer Row (#F8FAFC)
+  ctx.fillStyle = '#F8FAFC';
+  ctx.fillRect(tableX, currentY, tableW, tableSubtotalHeight);
+
+  ctx.strokeStyle = '#CBD5E1';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(tableX, currentY);
+  ctx.lineTo(tableX + tableW, currentY);
+  ctx.stroke();
+
+  ctx.fillStyle = '#1E293B';
+  ctx.font = 'bold 11px ' + fontSans;
+  ctx.textAlign = 'left';
+  ctx.fillText('Total', tableX + srW + 6, currentY + 17);
+
+  ctx.textAlign = 'right';
+  ctx.font = 'bold 11.5px ' + fontSans;
+  ctx.fillText((options.paymentAmount / 100).toFixed(2), tableX + tableW - 6, currentY + 17);
+
+  currentY += tableSubtotalHeight + 12;
+
+  // 9. FINANCIAL BALANCE SUMMARY (Right-Aligned Box, exact match to Delivery Slip)
+  const boxW = 210;
+  const boxX = rightX - boxW;
+
+  const renderBalanceRow = (label: string, valStr: string, isBold = false, valColor = '#1E293B') => {
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#64748B';
-    ctx.font = 'normal 10.5px ' + fontSans;
-    ctx.fillText('UTR / Ref No', boxX + 12, py);
-
-    ctx.textAlign = 'right';
-    ctx.fillStyle = '#0F172A';
-    ctx.font = 'bold 11px ' + fontSans;
-    ctx.fillText(options.referenceNo, rightX - 12, py);
-  }
-
-  if (options.notes) {
-    py += 20;
-    ctx.textAlign = 'left';
-    ctx.fillStyle = '#64748B';
-    ctx.font = 'normal 10px ' + fontSans;
-    ctx.fillText('Note', boxX + 12, py);
-
-    ctx.textAlign = 'right';
-    ctx.fillStyle = '#475569';
-    ctx.font = 'normal 10px ' + fontSans;
-    ctx.fillText(options.notes, rightX - 12, py);
-  }
-
-  currentY += paymentDetailsH + 14;
-
-  // 5. ACCOUNT BALANCE SUMMARY BREAKDOWN
-  const summaryBoxW = 240;
-  const summaryX = rightX - summaryBoxW;
-
-  const renderSummaryRow = (label: string, val: string, isBold = false, valColor = '#334155') => {
-    ctx.textAlign = 'left';
-    ctx.fillStyle = isBold ? '#0F172A' : '#64748B';
-    ctx.font = (isBold ? 'bold ' : 'normal ') + '11px ' + fontSans;
-    ctx.fillText(label, summaryX, currentY);
+    ctx.fillStyle = isBold ? '#1E293B' : '#475569';
+    ctx.font = isBold ? 'bold 11px ' + fontSans : '500 11px ' + fontSans;
+    ctx.fillText(label, boxX, currentY + 12);
 
     ctx.textAlign = 'right';
     ctx.fillStyle = valColor;
-    ctx.font = (isBold ? 'bold ' : 'normal ') + '11px ' + fontSans;
-    ctx.fillText(val, rightX, currentY);
-    currentY += 19;
+    ctx.font = isBold ? 'bold 11.5px ' + fontSans : 'normal 11px ' + fontSans;
+    ctx.fillText(valStr, rightX, currentY + 12);
+
+    currentY += 18;
   };
 
-  renderSummaryRow('Previous Balance', formatPaiseForPDF(options.previousBalance));
-  renderSummaryRow('Amount Received', `-${formatPaiseForPDF(options.paymentAmount)}`, true, '#059669');
+  renderBalanceRow('Total', (options.paymentAmount / 100).toFixed(2), true);
+  renderBalanceRow('Previous Bal.', (options.previousBalance / 100).toFixed(2));
+  renderBalanceRow('Paid Amount', `-${(options.paymentAmount / 100).toFixed(2)}`, false, '#16A34A');
 
-  // Separator
+  // Current Balance Highlight Row
   ctx.strokeStyle = '#CBD5E1';
   ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.moveTo(summaryX, currentY - 2);
-  ctx.lineTo(rightX, currentY - 2);
+  ctx.moveTo(boxX, currentY + 4);
+  ctx.lineTo(rightX, currentY + 4);
   ctx.stroke();
 
-  currentY += 6;
-  const statusLabel =
-    options.closingBalance > 0
-      ? 'Remaining Due'
-      : options.closingBalance < 0
-      ? 'Advance Balance'
-      : 'Settled (Balance 0.00)';
-  const statusColor = options.closingBalance > 0 ? '#E11D48' : '#059669';
+  currentY += 8;
+  const curBalLabel = options.closingBalance > 0 ? 'Current Bal.' : options.closingBalance < 0 ? 'Advance Bal.' : 'Current Bal.';
+  renderBalanceRow(
+    curBalLabel,
+    (Math.abs(options.closingBalance) / 100).toFixed(2),
+    true,
+    options.closingBalance > 0 ? '#E11D48' : '#0F172A'
+  );
 
-  renderSummaryRow(statusLabel, formatPaiseForPDF(Math.abs(options.closingBalance)), true, statusColor);
-
-  // 6. FOOTER NOTE
-  currentY += 10;
+  // 10. FOOTER NOTE (Tight padding, cut-to-cut bottom)
+  currentY += 14;
   ctx.textAlign = 'center';
   ctx.fillStyle = '#94A3B8';
   ctx.font = 'normal 10.5px ' + fontSans;
-  ctx.fillText(options.footerNote || 'Thank you for your payment.', width / 2, currentY + 10);
+  ctx.fillText(options.footerNote || 'Thank you for doing business with us.', width / 2, currentY + 10);
 
+  // Subtle Outer Card Border (1px slate-200 around cut-to-cut canvas)
   ctx.strokeStyle = '#E2E8F0';
   ctx.lineWidth = 1;
   ctx.strokeRect(0, 0, width, totalHeight);

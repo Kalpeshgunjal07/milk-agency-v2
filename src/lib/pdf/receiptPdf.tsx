@@ -464,7 +464,7 @@ export const PaymentReceiptDocument: React.FC<PaymentReceiptPdfProps> = ({
   closingBalance,
   notes,
   footerNote,
-  headerColor = '#059669', // Emerald green for payment received
+  headerColor = '#00A8E8', // Cyan default matching Delivery Slip
 }) => {
   const effectiveLogo = logoUrl || AGENCY_LOGO_BASE64;
 
@@ -475,27 +475,23 @@ export const PaymentReceiptDocument: React.FC<PaymentReceiptPdfProps> = ({
 
   const methodLabel =
     paymentMethod === 'cash'
-      ? 'Cash Payment'
+      ? 'Cash'
       : paymentMethod === 'upi'
-      ? 'UPI / QR Code'
+      ? 'UPI'
       : paymentMethod === 'bank_transfer'
-      ? 'Bank Transfer'
+      ? 'Bank'
       : paymentMethod.toUpperCase();
 
-  const balanceStatusLabel =
-    closingBalance > 0
-      ? 'Remaining Due'
-      : closingBalance < 0
-      ? 'Advance Balance'
-      : 'Settled (All Dues Cleared)';
+  const particularText = notes || 'Payment Received';
+  const curBalLabel = closingBalance > 0 ? 'Current Bal.' : closingBalance < 0 ? 'Advance Bal.' : 'Current Bal.';
 
   return (
     <Document>
-      <Page size={[300, 480]} style={styles.page}>
+      <Page size={[300, 490]} style={styles.page}>
         {/* Top Header Banner - Payment Received */}
         <View style={[styles.topBanner, { backgroundColor: headerColor }]}>
           <Text style={styles.bannerLabel}>Payment received</Text>
-          <Text style={styles.bannerAmount}>{formatPaiseForPDF(paymentAmount)}</Text>
+          <Text style={styles.bannerAmount}>Rs. {(paymentAmount / 100).toFixed(2)}</Text>
         </View>
 
         <View style={styles.body}>
@@ -517,12 +513,11 @@ export const PaymentReceiptDocument: React.FC<PaymentReceiptPdfProps> = ({
             </View>
           </View>
 
-          {/* Received From & Ref / Date */}
+          {/* Bill To & Ref / Date */}
           <View style={styles.metaSection}>
             <View style={styles.metaLeft}>
-              <Text style={[styles.metaCyanLabel, { color: headerColor }]}>Received From:</Text>
+              <Text style={[styles.metaCyanLabel, { color: headerColor }]}>Bill To:</Text>
               <Text style={styles.customerName}>{customerName}</Text>
-              <Text style={{ fontSize: 7.5, color: '#64748B' }}>Code: {customerCode}</Text>
               {customerMobile && (
                 <Text style={[styles.customerPhone, { color: headerColor }]}>
                   Tel: {customerMobile}
@@ -531,54 +526,70 @@ export const PaymentReceiptDocument: React.FC<PaymentReceiptPdfProps> = ({
             </View>
             <View style={styles.metaRight}>
               <Text style={[styles.metaCyanLabel, { color: headerColor }]}>
-                Receipt No: <Text style={styles.refValue}>{receiptNo.replace('RCP-PAY-', '').replace('RCP-', '')}</Text>
+                Ref No: <Text style={styles.refValue}>{receiptNo.replace('RCP-PAY-', '').replace('RCP-', '')}</Text>
               </Text>
               <Text style={[styles.metaCyanLabel, { color: headerColor }]}>Date of Payment</Text>
               <Text style={styles.dateValue}>{paymentDate}</Text>
             </View>
           </View>
 
-          {/* Payment Method & Transaction Info */}
-          <View style={[styles.tableContainer, { padding: 8, backgroundColor: '#F8FAFC' }]}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-              <Text style={{ fontSize: 8, color: '#64748B' }}>Payment Mode:</Text>
-              <Text style={{ fontSize: 8, fontFamily: 'Helvetica-Bold', color: '#1E293B' }}>{methodLabel}</Text>
+          {/* Table Container (Enclosed Rounded Box matching DailyReceiptDocument) */}
+          <View style={styles.tableContainer}>
+            {/* Table Header */}
+            <View style={styles.tableHeader}>
+              <Text style={{ width: '10%', textAlign: 'center' }}>SR</Text>
+              <Text style={{ width: '42%' }}>PARTICULARS</Text>
+              <Text style={{ width: '18%', textAlign: 'center' }}>MODE</Text>
+              <Text style={{ width: '14%', textAlign: 'center' }}>REF NO</Text>
+              <Text style={{ width: '16%', textAlign: 'right' }}>AMOUNT</Text>
             </View>
-            {referenceNo && (
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                <Text style={{ fontSize: 8, color: '#64748B' }}>Ref / UTR No:</Text>
-                <Text style={{ fontSize: 8, fontFamily: 'Helvetica-Bold', color: '#1E293B' }}>{referenceNo}</Text>
-              </View>
-            )}
-            {notes && (
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={{ fontSize: 8, color: '#64748B' }}>Note:</Text>
-                <Text style={{ fontSize: 8, color: '#475569' }}>{notes}</Text>
-              </View>
-            )}
+
+            {/* Item Row */}
+            <View style={styles.tableRow}>
+              <Text style={{ width: '10%', textAlign: 'center', color: '#64748B' }}>1</Text>
+              <Text style={{ width: '42%', fontFamily: 'Helvetica-Bold' }}>{particularText}</Text>
+              <Text style={{ width: '18%', textAlign: 'center' }}>{methodLabel}</Text>
+              <Text style={{ width: '14%', textAlign: 'center', color: '#64748B' }}>{referenceNo || '—'}</Text>
+              <Text style={{ width: '16%', textAlign: 'right', fontFamily: 'Helvetica-Bold' }}>
+                {(paymentAmount / 100).toFixed(2)}
+              </Text>
+            </View>
+
+            {/* Subtotal Row */}
+            <View style={styles.tableRowSubTotal}>
+              <Text style={{ width: '10%' }}></Text>
+              <Text style={{ width: '42%' }}>Total</Text>
+              <Text style={{ width: '18%' }}></Text>
+              <Text style={{ width: '14%' }}></Text>
+              <Text style={{ width: '16%', textAlign: 'right' }}>{(paymentAmount / 100).toFixed(2)}</Text>
+            </View>
           </View>
 
-          {/* Account Balance Summary Breakdown */}
+          {/* Financial Balance Summary Breakdown */}
           <View style={styles.balanceSection}>
             <View style={styles.balanceBox}>
               <View style={styles.balanceRow}>
-                <Text>Previous Balance</Text>
-                <Text>{formatPaiseForPDF(previousBalance)}</Text>
+                <Text style={{ fontFamily: 'Helvetica-Bold' }}>Total</Text>
+                <Text style={{ fontFamily: 'Helvetica-Bold' }}>{(paymentAmount / 100).toFixed(2)}</Text>
               </View>
-              <View style={[styles.balanceRow, { color: '#059669' }]}>
-                <Text style={{ fontFamily: 'Helvetica-Bold' }}>Payment Received</Text>
-                <Text style={{ fontFamily: 'Helvetica-Bold' }}>- {formatPaiseForPDF(paymentAmount)}</Text>
+              <View style={styles.balanceRow}>
+                <Text>Previous Bal.</Text>
+                <Text>{(previousBalance / 100).toFixed(2)}</Text>
+              </View>
+              <View style={[styles.balanceRow, { color: '#16A34A' }]}>
+                <Text>Paid Amount</Text>
+                <Text>-{(paymentAmount / 100).toFixed(2)}</Text>
               </View>
               <View style={styles.balanceRowHighlight}>
-                <Text>{balanceStatusLabel}</Text>
-                <Text>{formatPaiseForPDF(Math.abs(closingBalance))}</Text>
+                <Text>{curBalLabel}</Text>
+                <Text>{(Math.abs(closingBalance) / 100).toFixed(2)}</Text>
               </View>
             </View>
           </View>
 
           {/* Footer Note */}
           <Text style={styles.footerText}>
-            {footerNote || 'Thank you for your timely payment.'}
+            {footerNote || 'Thank you for doing business with us.'}
           </Text>
         </View>
       </Page>

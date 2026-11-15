@@ -173,7 +173,7 @@ export const PaymentListView: React.FC<PaymentListViewProps> = ({
       const effectiveLogo = agencySettings?.logo_path || AGENCY_LOGO_BASE64;
       const dateStr = p.payment_date.replace(/-/g, '');
       const receiptCode = `RCP-PAY-${dateStr}-${p.customerCode || p.customer_id}`;
-      const headerColor = agencySettings?.receipt_header_color || '#059669';
+      const headerColor = agencySettings?.receipt_header_color || '#00A8E8';
 
       const message = formatPaymentWhatsAppMessage({
         customerName: p.customerName,

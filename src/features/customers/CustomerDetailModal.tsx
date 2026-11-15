@@ -212,7 +212,7 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
 
       const dateStr = p.payment_date.replace(/-/g, '');
       const receiptCode = `RCP-PAY-${dateStr}-${customer.customer_code}`;
-      const headerColor = agencySettings?.receipt_header_color || '#059669';
+      const headerColor = agencySettings?.receipt_header_color || '#00A8E8';
 
       const message = formatPaymentWhatsAppMessage({
         customerName: customer.name,
