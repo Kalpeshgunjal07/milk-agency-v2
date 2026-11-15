@@ -1,8 +1,20 @@
 import React, { useMemo, useState } from 'react';
-import { CustomerRecord, PaymentRecord } from '../../types/models';
+import {
+  AgencySettings,
+  CustomerRecord,
+  LedgerEntryRecord,
+  PaymentRecord,
+} from '../../types/models';
 import { Button } from '../../components/ui/Button';
 import { formatPaiseAsINR } from '../../lib/calculations/money';
 import { formatDate } from '../../lib/formatters/date';
+import { AGENCY_LOGO_BASE64 } from '../../lib/logoBase64';
+import { generatePaymentReceiptImageBlob } from '../../lib/receiptImage';
+import {
+  formatPaymentWhatsAppMessage,
+  shareImageOnWhatsApp,
+  openWhatsAppShare,
+} from '../../lib/whatsapp/share';
 import {
   Plus,
   Send,
@@ -17,12 +29,14 @@ import {
   ChevronRight,
   MapPin,
   Pencil,
+  Loader2,
 } from 'lucide-react';
-import { openWhatsAppShare } from '../../lib/whatsapp/share';
 
 interface PaymentListViewProps {
   payments: PaymentRecord[];
   customers: CustomerRecord[];
+  ledgerEntries?: LedgerEntryRecord[];
+  agencySettings?: AgencySettings | null;
   onAddPayment: () => void;
   onEditPayment?: (payment: PaymentRecord) => void;
   searchQuery: string;
@@ -31,6 +45,8 @@ interface PaymentListViewProps {
 export const PaymentListView: React.FC<PaymentListViewProps> = ({
   payments,
   customers,
+  ledgerEntries,
+  agencySettings,
   onAddPayment,
   onEditPayment,
   searchQuery,
@@ -38,6 +54,7 @@ export const PaymentListView: React.FC<PaymentListViewProps> = ({
   const [methodFilter, setMethodFilter] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
+  const [sharingPaymentId, setSharingPaymentId] = useState<number | null>(null);
 
   // Metrics computation
   const metrics = useMemo(() => {
@@ -125,15 +142,90 @@ export const PaymentListView: React.FC<PaymentListViewProps> = ({
     );
   };
 
-  const handleShareWhatsApp = (p: any) => {
-    openWhatsAppShare({
-      mobile: p.customerMobile,
-      message: `🥛 *PAYMENT ACKNOWLEDGEMENT*\nDear ${p.customerName},\nWe have received your payment of *${formatPaiseAsINR(
-        p.amount
-      )}* on ${p.payment_date} via ${p.payment_method.toUpperCase()}.\nRef No: ${
-        p.reference_no || 'None'
-      }.\nYour account has been credited.\nThank you! 🙏`,
-    });
+  const handleShareWhatsApp = async (p: any) => {
+    if (!p.customerMobile) {
+      alert(`No mobile number registered for ${p.customerName}`);
+      return;
+    }
+    setSharingPaymentId(p.id);
+    try {
+      const custLedger = (ledgerEntries || []).filter((l) => l.customer_id === p.customer_id);
+      const paymentEntry = custLedger.find(
+        (l) => l.related_entity_type === 'payments' && l.related_entity_id === p.id
+      );
+
+      let closingBal = 0;
+      let prevBal = 0;
+
+      if (paymentEntry) {
+        closingBal = paymentEntry.running_balance;
+        prevBal = closingBal + p.amount;
+      } else {
+        const custObj = customers.find((c) => c.id === p.customer_id);
+        const latestBal = custLedger.length
+          ? custLedger[custLedger.length - 1].running_balance
+          : (custObj?.opening_balance ?? 0);
+        closingBal = latestBal;
+        prevBal = closingBal + p.amount;
+      }
+
+      const effectiveAgencyName = agencySettings?.agency_name || 'Satvik Milk Agency';
+      const effectiveLogo = agencySettings?.logo_path || AGENCY_LOGO_BASE64;
+      const dateStr = p.payment_date.replace(/-/g, '');
+      const receiptCode = `RCP-PAY-${dateStr}-${p.customerCode || p.customer_id}`;
+      const headerColor = agencySettings?.receipt_header_color || '#059669';
+
+      const message = formatPaymentWhatsAppMessage({
+        customerName: p.customerName,
+        agencyName: effectiveAgencyName,
+        agencyBrandLine: agencySettings?.receipt_brand_line,
+        agencyPhone: agencySettings?.mobile,
+        paymentAmountPaise: p.amount,
+        paymentMethod: p.payment_method,
+        paymentDate: formatDate(p.payment_date),
+        receiptNo: receiptCode,
+        referenceNo: p.reference_no,
+        previousBalancePaise: prevBal,
+        closingBalancePaise: closingBal,
+        notes: p.notes,
+      });
+
+      const imageBlob = await generatePaymentReceiptImageBlob({
+        agencyName: effectiveAgencyName,
+        agencyAddress: agencySettings?.address,
+        agencyMobile: agencySettings?.mobile,
+        receiptBrandLine: agencySettings?.receipt_brand_line,
+        receiptGst: agencySettings?.receipt_gst,
+        logoBase64: effectiveLogo,
+        receiptNo: receiptCode,
+        date: formatDate(p.payment_date),
+        customerName: p.customerName,
+        customerCode: p.customerCode,
+        customerMobile: p.customerMobile,
+        paymentAmount: p.amount,
+        paymentMethod: p.payment_method,
+        referenceNo: p.reference_no,
+        previousBalance: prevBal,
+        closingBalance: closingBal,
+        notes: p.notes,
+        footerNote: agencySettings?.default_receipt_footer,
+        headerColor,
+      });
+
+      await shareImageOnWhatsApp({
+        mobile: p.customerMobile,
+        message,
+        imageBlob,
+        fileName: `${receiptCode}.png`,
+      });
+    } catch (err) {
+      console.error('Failed to share payment receipt image:', err);
+      if (p.customerMobile) {
+        openWhatsAppShare(p.customerMobile);
+      }
+    } finally {
+      setSharingPaymentId(null);
+    }
   };
 
   return (
@@ -287,10 +379,15 @@ export const PaymentListView: React.FC<PaymentListViewProps> = ({
                 )}
                 <button
                   onClick={() => handleShareWhatsApp(p)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 min-h-11 rounded-xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-700 font-medium text-xs border border-emerald-200 transition-colors cursor-pointer"
+                  disabled={sharingPaymentId === p.id}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 min-h-11 rounded-xl bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-700 font-medium text-xs border border-emerald-200 transition-colors cursor-pointer disabled:opacity-60"
                 >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>WhatsApp</span>
+                  {sharingPaymentId === p.id ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-600" />
+                  ) : (
+                    <Send className="w-3.5 h-3.5" />
+                  )}
+                  <span>{sharingPaymentId === p.id ? 'Preparing...' : 'WhatsApp'}</span>
                 </button>
               </div>
             </div>
@@ -372,11 +469,16 @@ export const PaymentListView: React.FC<PaymentListViewProps> = ({
                         )}
                         <button
                           onClick={() => handleShareWhatsApp(p)}
+                          disabled={sharingPaymentId === p.id}
                           title="Share via WhatsApp"
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-colors cursor-pointer disabled:opacity-60"
                         >
-                          <Send className="w-3 h-3 text-emerald-600" />
-                          <span>WhatsApp</span>
+                          {sharingPaymentId === p.id ? (
+                            <Loader2 className="w-3 h-3 animate-spin text-emerald-600" />
+                          ) : (
+                            <Send className="w-3 h-3 text-emerald-600" />
+                          )}
+                          <span>{sharingPaymentId === p.id ? 'Sending...' : 'WhatsApp'}</span>
                         </button>
                       </div>
                     </td>

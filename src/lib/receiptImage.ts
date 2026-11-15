@@ -534,3 +534,327 @@ export async function generateReceiptImageBlob(options: ReceiptImageOptions): Pr
     }, 'image/png');
   });
 }
+
+export interface PaymentReceiptImageOptions {
+  agencyName: string;
+  agencyAddress?: string;
+  agencyMobile?: string;
+  receiptBrandLine?: string;
+  receiptGst?: string;
+  agencyState?: string;
+  receiptNo: string;
+  date: string;
+  customerName: string;
+  customerCode?: string;
+  customerMobile?: string;
+  paymentAmount: number; // in paise
+  paymentMethod: string;
+  referenceNo?: string;
+  previousBalance: number; // in paise
+  closingBalance: number; // in paise
+  notes?: string;
+  footerNote?: string;
+  headerColor?: string;
+  logoBase64?: string;
+}
+
+export async function generatePaymentReceiptImageBlob(options: PaymentReceiptImageOptions): Promise<Blob> {
+  if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
+    try {
+      await document.fonts.ready;
+    } catch {
+      // Continue if font loading fails
+    }
+  }
+
+  const width = 420;
+  const padX = 20;
+  const rightX = width - padX;
+  const headerColor = options.headerColor || '#059669'; // Emerald green
+  const effectiveLogo = options.logoBase64 || AGENCY_LOGO_BASE64;
+  const fontSans = 'Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+  let logoImg: HTMLImageElement | null = null;
+  try {
+    logoImg = await loadCanvasImage(effectiveLogo);
+  } catch (err) {
+    console.warn('Payment receipt logo could not be loaded for canvas:', err);
+  }
+
+  const measureCanvas = document.createElement('canvas');
+  const mCtx = measureCanvas.getContext('2d');
+  if (!mCtx) throw new Error('Canvas 2D context not available');
+
+  const logoSize = 64;
+  const logoX = rightX - logoSize;
+  const maxTextW = logoX - padX - 12;
+
+  const cleanTitle = options.receiptBrandLine && !options.agencyName.toLowerCase().includes(options.receiptBrandLine.toLowerCase())
+    ? `${options.agencyName} ${options.receiptBrandLine}`.trim()
+    : options.agencyName.trim();
+
+  mCtx.font = 'bold 12.5px ' + fontSans;
+  const titleLines = wrapText(mCtx, cleanTitle.toUpperCase(), maxTextW);
+
+  mCtx.font = 'normal 10px ' + fontSans;
+  const addressLines = options.agencyAddress ? wrapText(mCtx, options.agencyAddress, maxTextW) : [];
+
+  let agencyBlockH = titleLines.length * 17 + 4;
+  agencyBlockH += addressLines.length * 15;
+  if (options.agencyMobile) agencyBlockH += 17;
+  if (options.receiptGst) agencyBlockH += 15;
+  agencyBlockH = Math.max(agencyBlockH, logoSize);
+
+  const bannerH = 76;
+  const metaH = 58;
+  const paymentDetailsH = 68 + (options.notes ? 18 : 0);
+  const balanceBoxH = 92;
+  const footerH = 34;
+
+  const totalHeight = bannerH + 16 + agencyBlockH + 16 + metaH + 16 + paymentDetailsH + 16 + balanceBoxH + 14 + footerH + 16;
+
+  const canvas = document.createElement('canvas');
+  const pixelRatio = 3;
+  canvas.width = width * pixelRatio;
+  canvas.height = totalHeight * pixelRatio;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Failed to create canvas context');
+
+  ctx.scale(pixelRatio, pixelRatio);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, width, totalHeight);
+
+  // 1. TOP BANNER
+  ctx.fillStyle = headerColor;
+  ctx.fillRect(0, 0, width, bannerH);
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+  ctx.font = 'normal 11.5px ' + fontSans;
+  ctx.fillText('Payment received', width / 2, 28);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 24px ' + fontSans;
+  ctx.fillText(formatPaiseForPDF(options.paymentAmount), width / 2, 58);
+
+  // 2. AGENCY BLOCK
+  let currentY = bannerH + 16;
+  if (logoImg) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(logoX + logoSize / 2, currentY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(logoImg, logoX, currentY, logoSize, logoSize);
+    ctx.restore();
+
+    ctx.beginPath();
+    ctx.arc(logoX + logoSize / 2, currentY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+    ctx.strokeStyle = '#E2E8F0';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  let textY = currentY + 13;
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#0F172A';
+  ctx.font = 'bold 12.5px ' + fontSans;
+  for (const line of titleLines) {
+    ctx.fillText(line, padX, textY);
+    textY += 17;
+  }
+
+  ctx.fillStyle = '#64748B';
+  ctx.font = 'normal 10px ' + fontSans;
+  for (const line of addressLines) {
+    ctx.fillText(line, padX, textY);
+    textY += 15;
+  }
+
+  if (options.agencyMobile) {
+    ctx.fillStyle = headerColor;
+    ctx.font = 'bold 10px ' + fontSans;
+    ctx.fillText('Tel: ' + options.agencyMobile, padX, textY);
+    textY += 17;
+  }
+
+  if (options.receiptGst) {
+    ctx.fillStyle = '#64748B';
+    ctx.font = 'normal 9.5px ' + fontSans;
+    ctx.fillText('Company GST : ' + options.receiptGst, padX, textY);
+    textY += 15;
+  }
+
+  ctx.fillStyle = '#64748B';
+  ctx.font = 'normal 9.5px ' + fontSans;
+  ctx.fillText(options.agencyState || 'Maharashtra', padX, textY);
+
+  currentY += agencyBlockH + 16;
+
+  // 3. META SECTION (Received From & Receipt No)
+  ctx.strokeStyle = '#E2E8F0';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padX, currentY);
+  ctx.lineTo(rightX, currentY);
+  ctx.stroke();
+
+  currentY += 10;
+  ctx.textAlign = 'left';
+  ctx.fillStyle = headerColor;
+  ctx.font = 'bold 10px ' + fontSans;
+  ctx.fillText('Received From:', padX, currentY);
+
+  ctx.fillStyle = '#0F172A';
+  ctx.font = 'bold 12.5px ' + fontSans;
+  ctx.fillText(options.customerName, padX, currentY + 16);
+
+  ctx.fillStyle = '#64748B';
+  ctx.font = 'normal 9.5px ' + fontSans;
+  const custSub = options.customerCode
+    ? `${options.customerCode}${options.customerMobile ? ' • Tel: ' + options.customerMobile : ''}`
+    : options.customerMobile || '';
+  ctx.fillText(custSub, padX, currentY + 30);
+
+  // Right side
+  ctx.textAlign = 'right';
+  ctx.fillStyle = headerColor;
+  ctx.font = 'bold 10px ' + fontSans;
+  const cleanRef = options.receiptNo.replace('RCP-PAY-', '').replace('RCP-', '');
+  ctx.fillText('Receipt No: ' + cleanRef, rightX, currentY);
+
+  ctx.fillStyle = '#64748B';
+  ctx.font = 'normal 9.5px ' + fontSans;
+  ctx.fillText('Date of Payment', rightX, currentY + 15);
+
+  ctx.fillStyle = '#0F172A';
+  ctx.font = 'bold 10.5px ' + fontSans;
+  ctx.fillText(options.date, rightX, currentY + 30);
+
+  currentY += metaH - 10;
+  ctx.beginPath();
+  ctx.moveTo(padX, currentY);
+  ctx.lineTo(rightX, currentY);
+  ctx.stroke();
+
+  currentY += 14;
+
+  // 4. PAYMENT MODE BOX
+  const boxX = padX;
+  const boxW = rightX - padX;
+  ctx.fillStyle = '#F8FAFC';
+  drawRoundedRectPath(ctx, boxX, currentY, boxW, paymentDetailsH, 8);
+  ctx.fill();
+  ctx.strokeStyle = '#E2E8F0';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  const methodLabel =
+    options.paymentMethod === 'cash'
+      ? 'Cash Payment'
+      : options.paymentMethod === 'upi'
+      ? 'UPI / QR Code'
+      : options.paymentMethod === 'bank_transfer'
+      ? 'Bank Transfer'
+      : options.paymentMethod.toUpperCase();
+
+  let py = currentY + 18;
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#64748B';
+  ctx.font = 'normal 10.5px ' + fontSans;
+  ctx.fillText('Payment Mode', boxX + 12, py);
+
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#0F172A';
+  ctx.font = 'bold 11px ' + fontSans;
+  ctx.fillText(methodLabel, rightX - 12, py);
+
+  if (options.referenceNo) {
+    py += 20;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#64748B';
+    ctx.font = 'normal 10.5px ' + fontSans;
+    ctx.fillText('UTR / Ref No', boxX + 12, py);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#0F172A';
+    ctx.font = 'bold 11px ' + fontSans;
+    ctx.fillText(options.referenceNo, rightX - 12, py);
+  }
+
+  if (options.notes) {
+    py += 20;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#64748B';
+    ctx.font = 'normal 10px ' + fontSans;
+    ctx.fillText('Note', boxX + 12, py);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#475569';
+    ctx.font = 'normal 10px ' + fontSans;
+    ctx.fillText(options.notes, rightX - 12, py);
+  }
+
+  currentY += paymentDetailsH + 14;
+
+  // 5. ACCOUNT BALANCE SUMMARY BREAKDOWN
+  const summaryBoxW = 240;
+  const summaryX = rightX - summaryBoxW;
+
+  const renderSummaryRow = (label: string, val: string, isBold = false, valColor = '#334155') => {
+    ctx.textAlign = 'left';
+    ctx.fillStyle = isBold ? '#0F172A' : '#64748B';
+    ctx.font = (isBold ? 'bold ' : 'normal ') + '11px ' + fontSans;
+    ctx.fillText(label, summaryX, currentY);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = valColor;
+    ctx.font = (isBold ? 'bold ' : 'normal ') + '11px ' + fontSans;
+    ctx.fillText(val, rightX, currentY);
+    currentY += 19;
+  };
+
+  renderSummaryRow('Previous Balance', formatPaiseForPDF(options.previousBalance));
+  renderSummaryRow('Amount Received', `-${formatPaiseForPDF(options.paymentAmount)}`, true, '#059669');
+
+  // Separator
+  ctx.strokeStyle = '#CBD5E1';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(summaryX, currentY - 2);
+  ctx.lineTo(rightX, currentY - 2);
+  ctx.stroke();
+
+  currentY += 6;
+  const statusLabel =
+    options.closingBalance > 0
+      ? 'Remaining Due'
+      : options.closingBalance < 0
+      ? 'Advance Balance'
+      : 'Settled (Balance 0.00)';
+  const statusColor = options.closingBalance > 0 ? '#E11D48' : '#059669';
+
+  renderSummaryRow(statusLabel, formatPaiseForPDF(Math.abs(options.closingBalance)), true, statusColor);
+
+  // 6. FOOTER NOTE
+  currentY += 10;
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#94A3B8';
+  ctx.font = 'normal 10.5px ' + fontSans;
+  ctx.fillText(options.footerNote || 'Thank you for your payment.', width / 2, currentY + 10);
+
+  ctx.strokeStyle = '#E2E8F0';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(0, 0, width, totalHeight);
+
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error('Failed to generate payment image blob from canvas'));
+      }
+    }, 'image/png');
+  });
+}

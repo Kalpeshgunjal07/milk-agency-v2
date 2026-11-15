@@ -529,6 +529,8 @@ export function App() {
             <PaymentListView
               payments={payments}
               customers={customers}
+              ledgerEntries={ledgerEntries}
+              agencySettings={agencySettings}
               onAddPayment={() => {
                 setPaymentToEdit(null);
                 setPaymentDefaultCustId(undefined);
@@ -740,6 +742,8 @@ export function App() {
         customers={customers}
         defaultCustomerId={paymentDefaultCustId}
         paymentToEdit={paymentToEdit}
+        agencySettings={agencySettings}
+        ledgerEntries={ledgerEntries}
       />
     </div>
   );

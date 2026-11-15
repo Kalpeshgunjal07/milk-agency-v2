@@ -420,3 +420,168 @@ export const DailyReceiptDocument: React.FC<DailyReceiptProps> = ({
     </Document>
   );
 };
+
+export interface PaymentReceiptPdfProps {
+  agencyName: string;
+  agencyAddress?: string;
+  agencyMobile?: string;
+  receiptBrandLine?: string;
+  receiptGst?: string;
+  agencyState?: string;
+  logoUrl?: string;
+  receiptNo: string;
+  paymentDate: string;
+  customerName: string;
+  customerCode: string;
+  customerMobile?: string;
+  paymentAmount: number; // in paise
+  paymentMethod: string;
+  referenceNo?: string;
+  previousBalance: number; // in paise
+  closingBalance: number; // in paise
+  notes?: string;
+  footerNote?: string;
+  headerColor?: string;
+}
+
+export const PaymentReceiptDocument: React.FC<PaymentReceiptPdfProps> = ({
+  agencyName,
+  agencyAddress,
+  agencyMobile,
+  receiptBrandLine,
+  receiptGst,
+  agencyState = 'Maharashtra',
+  logoUrl,
+  receiptNo,
+  paymentDate,
+  customerName,
+  customerCode,
+  customerMobile,
+  paymentAmount,
+  paymentMethod,
+  referenceNo,
+  previousBalance,
+  closingBalance,
+  notes,
+  footerNote,
+  headerColor = '#059669', // Emerald green for payment received
+}) => {
+  const effectiveLogo = logoUrl || AGENCY_LOGO_BASE64;
+
+  const displayAgencyTitle =
+    receiptBrandLine && !agencyName.toLowerCase().includes(receiptBrandLine.toLowerCase())
+      ? `${agencyName} - ${receiptBrandLine}`
+      : agencyName;
+
+  const methodLabel =
+    paymentMethod === 'cash'
+      ? 'Cash Payment'
+      : paymentMethod === 'upi'
+      ? 'UPI / QR Code'
+      : paymentMethod === 'bank_transfer'
+      ? 'Bank Transfer'
+      : paymentMethod.toUpperCase();
+
+  const balanceStatusLabel =
+    closingBalance > 0
+      ? 'Remaining Due'
+      : closingBalance < 0
+      ? 'Advance Balance'
+      : 'Settled (All Dues Cleared)';
+
+  return (
+    <Document>
+      <Page size={[300, 480]} style={styles.page}>
+        {/* Top Header Banner - Payment Received */}
+        <View style={[styles.topBanner, { backgroundColor: headerColor }]}>
+          <Text style={styles.bannerLabel}>Payment received</Text>
+          <Text style={styles.bannerAmount}>{formatPaiseForPDF(paymentAmount)}</Text>
+        </View>
+
+        <View style={styles.body}>
+          {/* Agency Details & Logo */}
+          <View style={styles.agencyRow}>
+            <View style={styles.agencyDetails}>
+              <Text style={styles.agencyTitle}>{displayAgencyTitle}</Text>
+              {agencyAddress && <Text style={styles.agencyAddress}>{agencyAddress}</Text>}
+              {agencyMobile && (
+                <Text style={[styles.agencyPhone, { color: headerColor }]}>
+                  Tel: {agencyMobile}
+                </Text>
+              )}
+              {receiptGst && <Text style={styles.agencyGst}>Company GST : {receiptGst}</Text>}
+              <Text style={styles.agencyState}>{agencyState}</Text>
+            </View>
+            <View style={styles.logoContainer}>
+              <Image src={effectiveLogo} style={styles.logo} />
+            </View>
+          </View>
+
+          {/* Received From & Ref / Date */}
+          <View style={styles.metaSection}>
+            <View style={styles.metaLeft}>
+              <Text style={[styles.metaCyanLabel, { color: headerColor }]}>Received From:</Text>
+              <Text style={styles.customerName}>{customerName}</Text>
+              <Text style={{ fontSize: 7.5, color: '#64748B' }}>Code: {customerCode}</Text>
+              {customerMobile && (
+                <Text style={[styles.customerPhone, { color: headerColor }]}>
+                  Tel: {customerMobile}
+                </Text>
+              )}
+            </View>
+            <View style={styles.metaRight}>
+              <Text style={[styles.metaCyanLabel, { color: headerColor }]}>
+                Receipt No: <Text style={styles.refValue}>{receiptNo.replace('RCP-PAY-', '').replace('RCP-', '')}</Text>
+              </Text>
+              <Text style={[styles.metaCyanLabel, { color: headerColor }]}>Date of Payment</Text>
+              <Text style={styles.dateValue}>{paymentDate}</Text>
+            </View>
+          </View>
+
+          {/* Payment Method & Transaction Info */}
+          <View style={[styles.tableContainer, { padding: 8, backgroundColor: '#F8FAFC' }]}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+              <Text style={{ fontSize: 8, color: '#64748B' }}>Payment Mode:</Text>
+              <Text style={{ fontSize: 8, fontFamily: 'Helvetica-Bold', color: '#1E293B' }}>{methodLabel}</Text>
+            </View>
+            {referenceNo && (
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                <Text style={{ fontSize: 8, color: '#64748B' }}>Ref / UTR No:</Text>
+                <Text style={{ fontSize: 8, fontFamily: 'Helvetica-Bold', color: '#1E293B' }}>{referenceNo}</Text>
+              </View>
+            )}
+            {notes && (
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={{ fontSize: 8, color: '#64748B' }}>Note:</Text>
+                <Text style={{ fontSize: 8, color: '#475569' }}>{notes}</Text>
+              </View>
+            )}
+          </View>
+
+          {/* Account Balance Summary Breakdown */}
+          <View style={styles.balanceSection}>
+            <View style={styles.balanceBox}>
+              <View style={styles.balanceRow}>
+                <Text>Previous Balance</Text>
+                <Text>{formatPaiseForPDF(previousBalance)}</Text>
+              </View>
+              <View style={[styles.balanceRow, { color: '#059669' }]}>
+                <Text style={{ fontFamily: 'Helvetica-Bold' }}>Payment Received</Text>
+                <Text style={{ fontFamily: 'Helvetica-Bold' }}>- {formatPaiseForPDF(paymentAmount)}</Text>
+              </View>
+              <View style={styles.balanceRowHighlight}>
+                <Text>{balanceStatusLabel}</Text>
+                <Text>{formatPaiseForPDF(Math.abs(closingBalance))}</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Footer Note */}
+          <Text style={styles.footerText}>
+            {footerNote || 'Thank you for your timely payment.'}
+          </Text>
+        </View>
+      </Page>
+    </Document>
+  );
+};

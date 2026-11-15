@@ -95,6 +95,98 @@ export function generateMonthlyBillWhatsAppText(data: MonthlyBillShareData): str
   });
 }
 
+export interface PaymentReceiptShareData {
+  customerName: string;
+  agencyName?: string;
+  agencyBrandLine?: string;
+  agencyPhone?: string;
+  paymentAmountPaise: number;
+  paymentMethod: string;
+  paymentDate: string;
+  receiptNo: string;
+  referenceNo?: string;
+  previousBalancePaise: number;
+  closingBalancePaise: number;
+  notes?: string;
+}
+
+/**
+ * Formats a clear, professional payment voucher & receipt acknowledgement:
+ * Hi [Customer Name],
+ * Payment Receipt from [Agency Name].
+ * We have received payment of ₹[Amount] via [Method].
+ *
+ * 🧾 Payment Details:
+ * • Receipt No: [Receipt No]
+ * • Date: [Date]
+ * • Amount Received: ₹[Amount]
+ * • Ref / Txn ID: [Ref]
+ *
+ * 📊 Account Balance Statement:
+ * • Previous Balance: ₹[PrevBal]
+ * • Amount Deducted: -₹[Amount]
+ * • Remaining Balance Due / Settled: ₹[Remaining]
+ *
+ * Thank you for your payment!
+ * [Agency Name]
+ * [Agency Phone]
+ */
+export function formatPaymentWhatsAppMessage(data: PaymentReceiptShareData): string {
+  let agency = (data.agencyName || 'Satvik Milk Agency').trim();
+  if (data.agencyBrandLine && !agency.toLowerCase().includes(data.agencyBrandLine.toLowerCase())) {
+    agency = `${agency} ${data.agencyBrandLine}`.trim();
+  }
+  const phone = data.agencyPhone || '8600732906';
+
+  const formatINR = (paise: number) =>
+    (Math.abs(paise) / 100).toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  const methodLabel =
+    data.paymentMethod === 'cash'
+      ? 'Cash'
+      : data.paymentMethod === 'upi'
+      ? 'UPI / QR Code'
+      : data.paymentMethod === 'bank_transfer'
+      ? 'Bank Transfer'
+      : (data.paymentMethod || 'Cash').toUpperCase();
+
+  let balanceText = '';
+  if (data.closingBalancePaise > 0) {
+    balanceText = `Remaining Balance Due: ₹${formatINR(data.closingBalancePaise)}`;
+  } else if (data.closingBalancePaise < 0) {
+    balanceText = `Advance Balance Available: ₹${formatINR(data.closingBalancePaise)}`;
+  } else {
+    balanceText = `Remaining Balance: ₹0.00 (All Dues Cleared)`;
+  }
+
+  const lines: (string | null)[] = [
+    `Hi ${data.customerName},`,
+    `Payment Receipt from ${agency}.`,
+    `We have received payment of ₹${formatINR(data.paymentAmountPaise)} via ${methodLabel}.`,
+    ``,
+    `🧾 *Payment Details:*`,
+    `• Receipt No: ${data.receiptNo}`,
+    `• Date: ${data.paymentDate}`,
+    `• Amount Received: ₹${formatINR(data.paymentAmountPaise)}`,
+    data.referenceNo ? `• Ref / UTR No: ${data.referenceNo}` : null,
+    data.notes ? `• Note: ${data.notes}` : null,
+    ``,
+    `📊 *Account Balance Statement:*`,
+    `• Previous Balance: ₹${formatINR(data.previousBalancePaise)}`,
+    `• Amount Deducted: -₹${formatINR(data.paymentAmountPaise)}`,
+    `• *${balanceText}*`,
+    ``,
+    `Thank you for your payment! 🙏`,
+    `${agency}`,
+    `${phone}`,
+  ];
+
+  return lines.filter((l) => l !== null).join('\n');
+}
+
 export function openWhatsAppShare(
   mobileOrOpts: string | { mobile?: string; message: string } | undefined,
   maybeMessage?: string

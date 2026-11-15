@@ -33,10 +33,12 @@ import {
   shareImageOnWhatsApp,
   sharePdfOnWhatsApp,
   formatInvoiceWhatsAppMessage,
+  formatPaymentWhatsAppMessage,
 } from '../../lib/whatsapp/share';
 import { pdf } from '@react-pdf/renderer';
 import { DailyReceiptDocument } from '../../lib/pdf/receiptPdf';
-import { generateReceiptImageBlob } from '../../lib/receiptImage';
+import { generateReceiptImageBlob, generatePaymentReceiptImageBlob } from '../../lib/receiptImage';
+import { AGENCY_LOGO_BASE64 } from '../../lib/logoBase64';
 
 interface CustomerDetailModalProps {
   isOpen: boolean;
@@ -66,6 +68,7 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
   const [activeTab, setActiveTab] = useState('overview');
   const [receiptFormat, setReceiptFormat] = useState<'image' | 'pdf'>('image');
   const [sharingDeliveryId, setSharingDeliveryId] = useState<number | null>(null);
+  const [sharingPaymentId, setSharingPaymentId] = useState<number | null>(null);
 
   if (!customer) return null;
 
@@ -193,6 +196,74 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
       });
     } finally {
       setSharingDeliveryId(null);
+    }
+  };
+
+  const handleSharePaymentSlip = async (p: PaymentRecord) => {
+    if (!customer?.mobile) return;
+    setSharingPaymentId(p.id || null);
+    const effectiveAgencyName = agencySettings?.agency_name || 'Satvik Milk Agency';
+    try {
+      const paymentEntry = custLedger.find(
+        (l) => l.related_entity_type === 'payments' && l.related_entity_id === p.id
+      );
+      const closingBal = paymentEntry ? paymentEntry.running_balance : currentBalance;
+      const prevBal = closingBal + p.amount;
+
+      const dateStr = p.payment_date.replace(/-/g, '');
+      const receiptCode = `RCP-PAY-${dateStr}-${customer.customer_code}`;
+      const headerColor = agencySettings?.receipt_header_color || '#059669';
+
+      const message = formatPaymentWhatsAppMessage({
+        customerName: customer.name,
+        agencyName: effectiveAgencyName,
+        agencyBrandLine: agencySettings?.receipt_brand_line,
+        agencyPhone: agencySettings?.mobile,
+        paymentAmountPaise: p.amount,
+        paymentMethod: p.payment_method,
+        paymentDate: formatDate(p.payment_date),
+        receiptNo: receiptCode,
+        referenceNo: p.reference_no,
+        previousBalancePaise: prevBal,
+        closingBalancePaise: closingBal,
+        notes: p.notes,
+      });
+
+      const imageBlob = await generatePaymentReceiptImageBlob({
+        agencyName: effectiveAgencyName,
+        agencyAddress: agencySettings?.address,
+        agencyMobile: agencySettings?.mobile,
+        receiptBrandLine: agencySettings?.receipt_brand_line,
+        receiptGst: agencySettings?.receipt_gst,
+        logoBase64: agencySettings?.logo_path || AGENCY_LOGO_BASE64,
+        receiptNo: receiptCode,
+        date: formatDate(p.payment_date),
+        customerName: customer.name,
+        customerCode: customer.customer_code,
+        customerMobile: customer.mobile,
+        paymentAmount: p.amount,
+        paymentMethod: p.payment_method,
+        referenceNo: p.reference_no,
+        previousBalance: prevBal,
+        closingBalance: closingBal,
+        notes: p.notes,
+        footerNote: agencySettings?.default_receipt_footer,
+        headerColor,
+      });
+
+      await shareImageOnWhatsApp({
+        mobile: customer.mobile,
+        message,
+        imageBlob,
+        fileName: `${receiptCode}.png`,
+      });
+    } catch (err) {
+      console.error('Failed to share payment slip:', err);
+      if (customer.mobile) {
+        openWhatsAppShare(customer.mobile);
+      }
+    } finally {
+      setSharingPaymentId(null);
     }
   };
 
@@ -424,8 +495,28 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
                   <div>
                     <span className="font-semibold text-slate-800">{formatDate(p.payment_date)}</span>
                     <span className="text-slate-500 ml-2">via {p.payment_method.toUpperCase()}</span>
+                    {p.reference_no && (
+                      <span className="ml-1 text-[10px] text-slate-400 font-mono">({p.reference_no})</span>
+                    )}
                   </div>
-                  <span className="font-mono font-bold text-emerald-600">{formatPaiseAsINR(p.amount)}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-emerald-600">+{formatPaiseAsINR(p.amount)}</span>
+                    {customer.mobile && (
+                      <button
+                        onClick={() => handleSharePaymentSlip(p)}
+                        disabled={sharingPaymentId === p.id}
+                        title="Send Payment Receipt on WhatsApp"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-[11px] font-medium transition-colors cursor-pointer disabled:opacity-60"
+                      >
+                        {sharingPaymentId === p.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin text-emerald-600" />
+                        ) : (
+                          <Send className="w-3 h-3 text-emerald-600" />
+                        )}
+                        <span>Receipt</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))
             )}
