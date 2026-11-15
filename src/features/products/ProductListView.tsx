@@ -126,57 +126,57 @@ export const ProductListView: React.FC<ProductListViewProps> = ({
   return (
     <div className="space-y-4">
       {/* 4 Metric Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Dairy SKUs</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 min-[360px]:gap-2.5 sm:gap-3.5">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Dairy SKUs</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
               {metrics.totalProducts}{' '}
-              <span className="text-xs font-normal text-emerald-600">
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-emerald-600">
                 ({metrics.activeCount} Active)
               </span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
             <Package className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Milk Variants</p>
-            <p className="text-base sm:text-lg font-semibold text-blue-600 mt-0.5 truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Milk Variants</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-blue-600 mt-0.5 truncate">
               {metrics.milkCount}{' '}
-              <span className="text-xs font-normal text-slate-400">Listed</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400">Listed</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
             <Milk className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Byproducts</p>
-            <p className="text-base sm:text-lg font-semibold text-amber-600 mt-0.5 truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Byproducts</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-amber-600 mt-0.5 truncate">
               {metrics.byproductCount}{' '}
-              <span className="text-xs font-normal text-slate-400">Curd/Ghee</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400">Curd/Ghee</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
             <Layers className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Avg. Milk Rate</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 font-mono truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Avg. Milk Rate</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 font-mono truncate">
               {formatPaiseAsINR(metrics.avgPricePaise)}{' '}
-              <span className="text-xs font-normal text-slate-400 font-sans">/ Ltr</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400 font-sans">/ Ltr</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
@@ -252,22 +252,22 @@ export const ProductListView: React.FC<ProductListViewProps> = ({
             return (
               <div
                 key={p.id}
-                className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-2xs space-y-3"
+                className="bg-white rounded-2xl border border-slate-200/90 p-3 min-[360px]:p-4 shadow-2xs space-y-3"
               >
                 <div className="flex items-start justify-between gap-2.5">
-                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <div className="flex items-center gap-2 min-[360px]:gap-2.5 min-w-0 flex-1">
                     <div
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                      className={`w-9 h-9 min-[360px]:w-10 min-[360px]:h-10 rounded-xl flex items-center justify-center shrink-0 ${
                         isMilk
                           ? 'bg-blue-50 text-blue-600 border border-blue-200'
                           : 'bg-amber-50 text-amber-600 border border-amber-200'
                       }`}
                     >
-                      {isMilk ? <Milk className="w-5 h-5" /> : <Package className="w-5 h-5" />}
+                      {isMilk ? <Milk className="w-4 h-4 min-[360px]:w-5 min-[360px]:h-5" /> : <Package className="w-4 h-4 min-[360px]:w-5 min-[360px]:h-5" />}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
-                        <h3 className="font-semibold text-sm text-slate-900 leading-tight truncate">
+                        <h3 className="font-semibold text-xs min-[360px]:text-sm text-slate-900 leading-tight truncate">
                           {p.name}
                         </h3>
                         <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 shrink-0">
@@ -296,7 +296,7 @@ export const ProductListView: React.FC<ProductListViewProps> = ({
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100">
+                <div className="flex flex-wrap items-center justify-between text-xs pt-2 border-t border-slate-100 gap-1.5">
                   <div className="min-w-0 flex-1 pr-2">
                     <span className="text-slate-400 text-[10px] block">Selling Price</span>
                     <span className="font-mono font-semibold text-sm text-blue-700 truncate block">

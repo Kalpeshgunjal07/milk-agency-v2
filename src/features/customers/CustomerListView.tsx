@@ -165,61 +165,61 @@ export const CustomerListView: React.FC<CustomerListViewProps> = ({
   return (
     <div className="space-y-4">
       {/* 4 Metric Summary Cards (2 cols on mobile, 4 on desktop) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
-        <div className="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-2">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 min-[360px]:gap-2.5 sm:gap-3.5">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Total Accounts</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Total Accounts</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
               {metrics.totalCustomers}{' '}
-              <span className="text-xs font-normal text-emerald-600">
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-emerald-600">
                 ({metrics.activeCount} Active)
               </span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
             <Users className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-2">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Outstanding Dues</p>
-            <p className="text-base sm:text-lg font-semibold text-rose-600 mt-0.5 font-mono truncate">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Outstanding Dues</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-rose-600 mt-0.5 font-mono truncate">
               {formatPaiseAsINR(metrics.totalDuesPaise)}
             </p>
-            <p className="text-[10px] sm:text-[11px] font-normal text-slate-400 mt-0.5 truncate">
+            <p className="text-[9px] min-[360px]:text-[10px] sm:text-[11px] font-normal text-slate-400 mt-0.5 truncate">
               {metrics.customersWithDues} accounts due
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center shrink-0">
             <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-2">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Advance Collected</p>
-            <p className="text-base sm:text-lg font-semibold text-emerald-600 mt-0.5 font-mono truncate">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Advance Collected</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-emerald-600 mt-0.5 font-mono truncate">
               {formatPaiseAsINR(metrics.totalAdvancePaise)}
             </p>
-            <p className="text-[10px] sm:text-[11px] font-normal text-slate-400 mt-0.5 truncate">
+            <p className="text-[9px] min-[360px]:text-[10px] sm:text-[11px] font-normal text-slate-400 mt-0.5 truncate">
               {metrics.settledCount} accounts settled
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
             <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-2">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Delivery Routes</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Delivery Routes</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
               {metrics.routeCount}{' '}
-              <span className="text-xs font-normal text-slate-500">Active</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-500">Active</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
             <Navigation className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
@@ -359,24 +359,24 @@ export const CustomerListView: React.FC<CustomerListViewProps> = ({
             return (
               <div
                 key={c.id}
-                className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-2xs hover:shadow-xs transition-all space-y-3"
+                className="bg-white rounded-2xl border border-slate-200/90 p-3 min-[360px]:p-4 shadow-2xs hover:shadow-xs transition-all space-y-3"
               >
                 {/* Customer Header */}
-                <div className="flex items-start justify-between gap-2.5">
-                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                    <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center font-semibold text-xs shrink-0">
+                <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-start justify-between gap-2">
+                  <div className="flex items-center gap-2 min-[360px]:gap-2.5 min-w-0 flex-1">
+                    <div className="w-9 h-9 min-[360px]:w-10 min-[360px]:h-10 rounded-2xl bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center font-semibold text-xs shrink-0">
                       {initials}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 min-w-0">
-                        <h3 className="font-semibold text-sm text-slate-900 truncate leading-tight">
+                        <h3 className="font-semibold text-xs min-[360px]:text-sm text-slate-900 truncate leading-tight">
                           {c.name}
                         </h3>
                         <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 shrink-0">
                           {c.customer_code}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1 text-xs text-slate-500 mt-1 min-w-0">
+                      <div className="flex items-center gap-1 text-[11px] min-[360px]:text-xs text-slate-500 mt-0.5 min-w-0">
                         <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                         <span className="truncate">{c.route_area || 'Direct Route'}</span>
                       </div>
@@ -384,7 +384,7 @@ export const CustomerListView: React.FC<CustomerListViewProps> = ({
                   </div>
 
                   {/* Financial Balance Pill */}
-                  <div className="shrink-0 text-right">
+                  <div className="self-start min-[380px]:self-auto min-[380px]:text-right shrink-0">
                     {c.currentBalance > 0 ? (
                       <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap">
                         <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />

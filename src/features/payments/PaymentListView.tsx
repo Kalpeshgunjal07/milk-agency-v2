@@ -231,52 +231,52 @@ export const PaymentListView: React.FC<PaymentListViewProps> = ({
   return (
     <div className="space-y-4">
       {/* 4 Metric Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Total Collected</p>
-            <p className="text-base sm:text-lg font-semibold text-emerald-600 mt-0.5 font-mono truncate">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 min-[360px]:gap-2.5 sm:gap-3.5">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Total Collected</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-emerald-600 mt-0.5 font-mono truncate">
               {formatPaiseAsINR(metrics.totalCollected)}
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
             <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Cash Counter</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 font-mono truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Cash Counter</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 font-mono truncate">
               {formatPaiseAsINR(metrics.cashTotal)}
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
             <Banknote className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">UPI / QR Code</p>
-            <p className="text-base sm:text-lg font-semibold text-indigo-600 mt-0.5 font-mono truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">UPI / QR Code</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-indigo-600 mt-0.5 font-mono truncate">
               {formatPaiseAsINR(metrics.upiTotal)}
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
             <Smartphone className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Receipts</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Receipts</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
               {metrics.totalReceipts}{' '}
-              <span className="text-xs font-normal text-slate-400">Vouchers</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400">Vouchers</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
             <Receipt className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
@@ -325,24 +325,24 @@ export const PaymentListView: React.FC<PaymentListViewProps> = ({
           paginatedRows.map((p) => (
             <div
               key={p.id}
-              className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-2xs space-y-3"
+              className="bg-white rounded-2xl border border-slate-200/90 p-3 min-[360px]:p-4 shadow-2xs space-y-3"
             >
               <div className="flex items-start justify-between gap-2.5">
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-semibold text-sm text-slate-900 leading-tight truncate">
+                  <h3 className="font-semibold text-xs min-[360px]:text-sm text-slate-900 leading-tight truncate">
                     {p.customerName}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-1">
                     <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 shrink-0">
                       {p.customerCode}
                     </span>
-                    <span className="text-xs text-slate-400 truncate">{p.customerArea}</span>
+                    <span className="text-[11px] min-[360px]:text-xs text-slate-400 truncate">{p.customerArea}</span>
                   </div>
                 </div>
 
                 {/* Amount Paid */}
                 <div className="text-right shrink-0 whitespace-nowrap">
-                  <span className="font-mono font-bold text-base text-emerald-600 block">
+                  <span className="font-mono font-bold text-sm min-[360px]:text-base text-emerald-600 block">
                     +{formatPaiseAsINR(p.amount)}
                   </span>
                   <span className="text-[10px] text-slate-400 font-normal">
@@ -351,17 +351,17 @@ export const PaymentListView: React.FC<PaymentListViewProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100 gap-2">
-                <div className="flex items-center gap-1.5 min-w-0 flex-1">
+              <div className="flex flex-wrap items-center justify-between text-xs pt-2 border-t border-slate-100 gap-1.5 min-[360px]:gap-2">
+                <div className="flex items-center gap-1.5 min-w-0">
                   {renderMethodBadge(p.payment_method)}
                   {p.reference_no && (
-                    <span className="font-mono text-[11px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded truncate">
+                    <span className="font-mono text-[10px] min-[360px]:text-[11px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded truncate max-w-[120px]">
                       Ref: {p.reference_no}
                     </span>
                   )}
                 </div>
 
-                <span className="text-[11px] text-slate-400 truncate max-w-[110px] shrink-0 text-right">
+                <span className="text-[10px] min-[360px]:text-[11px] text-slate-400 truncate max-w-[110px] shrink-0 text-right">
                   {p.notes || 'Settlement'}
                 </span>
               </div>

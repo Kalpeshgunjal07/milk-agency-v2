@@ -147,54 +147,54 @@ export const BinView: React.FC<BinViewProps> = ({
   return (
     <div className="space-y-4">
       {/* 4 Metric Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Total in Bin</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 min-[360px]:gap-2.5 sm:gap-3.5">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Total in Bin</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
               {metrics.totalDeleted}{' '}
-              <span className="text-xs font-normal text-slate-400">Items</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400">Items</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
             <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Deleted Customers</p>
-            <p className="text-base sm:text-lg font-semibold text-blue-600 mt-0.5 truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Deleted Customers</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-blue-600 mt-0.5 truncate">
               {metrics.customerCount}{' '}
-              <span className="text-xs font-normal text-slate-400">Accounts</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400">Accounts</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
             <Users className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Deleted Products</p>
-            <p className="text-base sm:text-lg font-semibold text-indigo-600 mt-0.5 truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Deleted Products</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-indigo-600 mt-0.5 truncate">
               {metrics.productCount}{' '}
-              <span className="text-xs font-normal text-slate-400">SKUs</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400">SKUs</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
             <Package className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Preserved Balances</p>
-            <p className="text-base sm:text-lg font-semibold text-rose-600 mt-0.5 font-mono truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Preserved Balances</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-rose-600 mt-0.5 font-mono truncate">
               {formatPaiseAsINR(metrics.totalDues)}
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center shrink-0">
             <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>

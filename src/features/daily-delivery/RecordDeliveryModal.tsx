@@ -602,7 +602,7 @@ export const RecordDeliveryModal: React.FC<RecordDeliveryModalProps> = ({
                     </div>
 
                     {/* Rate & Line Total */}
-                    <div className="flex items-center gap-2 shrink-0 ml-auto sm:ml-0">
+                    <div className="flex items-center gap-2 shrink-0 w-full min-[360px]:w-auto justify-between min-[360px]:justify-end">
                       <div className="flex items-center gap-1">
                         <span className="text-[11px] text-slate-400">@ ₹</span>
                         <input
@@ -738,7 +738,7 @@ export const RecordDeliveryModal: React.FC<RecordDeliveryModalProps> = ({
                 <label className="block text-xs font-medium text-slate-700 mb-1">
                   Payment Mode
                 </label>
-                <div className="grid grid-cols-4 gap-1.5">
+                <div className="grid grid-cols-2 min-[420px]:grid-cols-4 gap-1.5">
                   {(
                     [
                       { id: 'cash', label: 'Cash' },
@@ -847,24 +847,24 @@ export const RecordDeliveryModal: React.FC<RecordDeliveryModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setReceiptFormat('image')}
-                    className={`px-3 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                    className={`px-2.5 min-[360px]:px-3 py-1 rounded-md text-[11px] min-[360px]:text-xs font-semibold transition-all cursor-pointer ${
                       receiptFormat === 'image'
                         ? 'bg-emerald-600 text-white shadow-2xs'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    Image Slip (Default)
+                    <span>Image Slip<span className="hidden min-[360px]:inline"> (Default)</span></span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setReceiptFormat('pdf')}
-                    className={`px-3 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                    className={`px-2.5 min-[360px]:px-3 py-1 rounded-md text-[11px] min-[360px]:text-xs font-semibold transition-all cursor-pointer ${
                       receiptFormat === 'pdf'
                         ? 'bg-emerald-600 text-white shadow-2xs'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    PDF Slip
+                    <span>PDF Slip</span>
                   </button>
                 </div>
               </div>

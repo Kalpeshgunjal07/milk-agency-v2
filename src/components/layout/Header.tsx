@@ -49,20 +49,20 @@ export const Header: React.FC<HeaderProps> = ({
   });
 
   return (
-    <header className="shrink-0 sticky top-0 z-30 flex items-center justify-between h-16 px-3 sm:px-6 bg-white/95 backdrop-blur-md border-b border-slate-200 gap-2 select-none shadow-2xs">
+    <header className="shrink-0 sticky top-0 z-30 flex items-center justify-between h-16 px-2 min-[360px]:px-3 sm:px-6 bg-white/95 backdrop-blur-md border-b border-slate-200 gap-1.5 sm:gap-2 select-none shadow-2xs overflow-hidden">
       {/* Mobile Hamburger & Title */}
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+      <div className="flex items-center gap-1.5 min-[360px]:gap-2 sm:gap-3 min-w-0 flex-1">
         <button
           onClick={onOpenMobileMenu}
-          className="md:hidden p-2 -ml-1 rounded-xl text-slate-700 hover:text-slate-900 bg-slate-100/90 hover:bg-slate-200 active:scale-95 transition-all shrink-0 cursor-pointer border border-slate-200/60 shadow-2xs"
+          className="md:hidden p-1.5 min-[360px]:p-2 -ml-0.5 rounded-xl text-slate-700 hover:text-slate-900 bg-slate-100/90 hover:bg-slate-200 active:scale-95 transition-all shrink-0 cursor-pointer border border-slate-200/60 shadow-2xs"
           title="Open Menu"
           aria-label="Open Navigation Menu"
         >
-          <Menu className="w-5 h-5 text-slate-800" />
+          <Menu className="w-4 h-4 min-[360px]:w-5 min-[360px]:h-5 text-slate-800" />
         </button>
 
         <div className="min-w-0 flex-1">
-          <h2 className="text-sm font-semibold text-slate-800 tracking-tight leading-none truncate">
+          <h2 className="text-xs min-[360px]:text-sm font-semibold text-slate-800 tracking-tight leading-none truncate">
             {current.title}
           </h2>
           <p className="text-[11px] font-normal text-slate-500 mt-1 leading-none hidden sm:block truncate">
@@ -72,16 +72,16 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Global Actions & Quick Tools */}
-      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+      <div className="flex items-center gap-1 min-[360px]:gap-1.5 sm:gap-3 shrink-0">
         {/* Quick Search */}
-        <div className="relative w-28 xs:w-36 sm:w-56 md:w-64">
-          <Search className="absolute left-2.5 top-2.5 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+        <div className="relative w-20 min-[360px]:w-28 sm:w-56 md:w-64">
+          <Search className="absolute left-2 top-2.5 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
           <input
             type="text"
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-7 sm:pl-9 pr-2.5 py-1.5 text-xs font-normal rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-1.5 focus:ring-blue-500 transition-colors"
+            className="w-full pl-6.5 min-[360px]:pl-7 sm:pl-9 pr-2 py-1.5 text-xs font-normal rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-1.5 focus:ring-blue-500 transition-colors"
           />
         </div>
 

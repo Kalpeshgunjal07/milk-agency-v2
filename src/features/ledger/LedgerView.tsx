@@ -157,52 +157,52 @@ export const LedgerView: React.FC<LedgerViewProps> = ({
   return (
     <div className="space-y-4">
       {/* 4 Metric Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Entries</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 min-[360px]:gap-2.5 sm:gap-3.5">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Entries</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
               {metrics.totalEntries}{' '}
-              <span className="text-xs font-normal text-slate-400">Total</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400">Total</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
             <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Debited (Sales)</p>
-            <p className="text-base sm:text-lg font-semibold text-rose-600 mt-0.5 font-mono truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Debited (Sales)</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-rose-600 mt-0.5 font-mono truncate">
               {formatPaiseAsINR(metrics.totalDebits)}
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center shrink-0">
             <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Credited (Paid)</p>
-            <p className="text-base sm:text-lg font-semibold text-emerald-600 mt-0.5 font-mono truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Credited (Paid)</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-emerald-600 mt-0.5 font-mono truncate">
               {formatPaiseAsINR(metrics.totalCredits)}
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
             <ArrowDownLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Net Balance</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 font-mono truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Net Balance</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 font-mono truncate">
               {formatPaiseAsINR(metrics.netReceivable)}
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
             <Scale className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
@@ -266,11 +266,11 @@ export const LedgerView: React.FC<LedgerViewProps> = ({
             return (
               <div
                 key={l.id}
-                className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-2xs space-y-2.5"
+                className="bg-white rounded-2xl border border-slate-200/90 p-3 min-[360px]:p-4 shadow-2xs space-y-2.5"
               >
                 <div className="flex items-start justify-between gap-2.5">
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-sm text-slate-900 leading-tight truncate">
+                    <h3 className="font-semibold text-xs min-[360px]:text-sm text-slate-900 leading-tight truncate">
                       {l.customerName}
                     </h3>
                     <div className="flex items-center gap-1.5 mt-1">
@@ -302,14 +302,14 @@ export const LedgerView: React.FC<LedgerViewProps> = ({
                   {l.description}
                 </p>
 
-                <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100 gap-2">
-                  <div className="flex items-center gap-1.5 text-slate-400 text-[11px] truncate">
+                <div className="flex flex-wrap items-center justify-between text-xs pt-1 border-t border-slate-100 gap-1.5">
+                  <div className="flex items-center gap-1.5 text-slate-400 text-[10px] min-[360px]:text-[11px] truncate">
                     <Calendar className="w-3.5 h-3.5 shrink-0" />
                     <span className="truncate">{formatDateTime(l.created_at)}</span>
                   </div>
 
                   <div className="shrink-0 whitespace-nowrap text-right">
-                    <span className="text-[10px] text-slate-400 mr-1.5">Net Balance:</span>
+                    <span className="text-[10px] text-slate-400 mr-1">Net:</span>
                     <span
                       className={`font-mono font-semibold text-xs ${
                         l.running_balance > 0

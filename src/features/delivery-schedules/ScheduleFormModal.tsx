@@ -172,7 +172,7 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = ({
               </button>
             </div>
           </div>
-          <div className="grid grid-cols-7 gap-1.5 pt-1">
+          <div className="grid grid-cols-7 gap-1 pt-1">
             {ALL_DAYS.map((day) => {
               const isSelected = selectedDays.includes(day);
               return (
@@ -180,7 +180,7 @@ export const ScheduleFormModal: React.FC<ScheduleFormModalProps> = ({
                   key={day}
                   type="button"
                   onClick={() => toggleDay(day)}
-                  className={`py-2 text-xs font-bold uppercase rounded-lg border transition-all cursor-pointer ${
+                  className={`py-1.5 min-[360px]:py-2 px-0.5 text-[10px] min-[360px]:text-xs font-bold uppercase rounded-lg border transition-all cursor-pointer ${
                     isSelected
                       ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                       : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'

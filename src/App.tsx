@@ -423,7 +423,7 @@ export function App() {
         )}
 
         {/* Dynamic Content Viewport */}
-        <main className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 pb-24 md:pb-6">
+        <main className="flex-1 overflow-y-auto p-2 min-[360px]:p-3 sm:p-5 md:p-6 pb-24 md:pb-6">
           {activeView === 'dashboard' && (
             <DashboardView
               customers={customers}
@@ -603,34 +603,34 @@ export function App() {
         </main>
 
         {/* Mobile Bottom Navigation Bar (Sticky for Smartphone & Tablet Use) */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-30 flex items-center justify-around px-2 shadow-lg select-none">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 z-30 flex items-center justify-around px-1 min-[360px]:px-2 shadow-lg select-none">
           <button
             onClick={() => setActiveView('dashboard')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
+            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors min-w-0 ${
               activeView === 'dashboard'
                 ? 'text-blue-600 font-semibold'
                 : 'text-slate-400 hover:text-slate-600'
             }`}
           >
-            <LayoutDashboard className="w-5 h-5" />
-            <span className="text-[10px] mt-0.5">Home</span>
+            <LayoutDashboard className="w-5 h-5 shrink-0" />
+            <span className="text-[9px] min-[360px]:text-[10px] mt-0.5 truncate">Home</span>
           </button>
 
           <button
             onClick={() => setActiveView('customers')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
+            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors min-w-0 ${
               activeView === 'customers'
                 ? 'text-blue-600 font-semibold'
                 : 'text-slate-400 hover:text-slate-600'
             }`}
           >
-            <Users className="w-5 h-5" />
-            <span className="text-[10px] mt-0.5">Customer</span>
+            <Users className="w-5 h-5 shrink-0" />
+            <span className="text-[9px] min-[360px]:text-[10px] mt-0.5 truncate">Customer</span>
           </button>
 
           <button
             onClick={() => setActiveView('deliveries')}
-            className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
+            className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-colors min-w-0 ${
               activeView === 'deliveries'
                 ? 'text-blue-600 font-semibold'
                 : 'text-slate-400 hover:text-slate-600'
@@ -643,33 +643,33 @@ export function App() {
                   : 'bg-blue-50 text-blue-600'
               }`}
             >
-              <Truck className="w-5 h-5" />
+              <Truck className="w-4 h-4 min-[360px]:w-5 min-[360px]:h-5" />
             </div>
-            <span className="text-[10px] mt-0.5 font-medium">Delivery</span>
+            <span className="text-[9px] min-[360px]:text-[10px] mt-0.5 font-medium truncate">Delivery</span>
           </button>
 
           <button
             onClick={() => setActiveView('billing')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
+            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors min-w-0 ${
               activeView === 'billing'
                 ? 'text-blue-600 font-semibold'
                 : 'text-slate-400 hover:text-slate-600'
             }`}
           >
-            <Receipt className="w-5 h-5" />
-            <span className="text-[10px] mt-0.5">Bill</span>
+            <Receipt className="w-5 h-5 shrink-0" />
+            <span className="text-[9px] min-[360px]:text-[10px] mt-0.5 truncate">Bill</span>
           </button>
 
           <button
             onClick={() => setActiveView('payments')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
+            className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors min-w-0 ${
               activeView === 'payments'
                 ? 'text-blue-600 font-semibold'
                 : 'text-slate-400 hover:text-slate-600'
             }`}
           >
-            <CreditCard className="w-5 h-5" />
-            <span className="text-[10px] mt-0.5">Payments</span>
+            <CreditCard className="w-5 h-5 shrink-0" />
+            <span className="text-[9px] min-[360px]:text-[10px] mt-0.5 truncate">Payments</span>
           </button>
         </nav>
       </div>

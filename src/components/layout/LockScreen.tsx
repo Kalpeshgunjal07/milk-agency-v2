@@ -68,8 +68,8 @@ export const LockScreen: React.FC<LockScreenProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4 select-none animate-fade-in">
-      <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-2xl text-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-2.5 min-[360px]:p-4 select-none animate-fade-in overflow-y-auto">
+      <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-4 min-[360px]:p-6 sm:p-7 shadow-2xl text-center my-auto">
         {/* Lock Icon */}
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-600/20 text-blue-400 border border-blue-500/30 mb-3 shadow-inner">
           <Lock className="w-6 h-6" />

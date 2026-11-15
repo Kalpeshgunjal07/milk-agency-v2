@@ -113,57 +113,57 @@ export const ScheduleListView: React.FC<ScheduleListViewProps> = ({
   return (
     <div className="space-y-4">
       {/* 4 Metric Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Subscriptions</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 min-[360px]:gap-2.5 sm:gap-3.5">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Subscriptions</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
               {metrics.activeCount}{' '}
-              <span className="text-xs font-normal text-slate-400">
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400">
                 ({metrics.pausedCount} Paused)
               </span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
             <CalendarCheck className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Daily Demand</p>
-            <p className="text-base sm:text-lg font-semibold text-blue-600 mt-0.5 font-mono truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Daily Demand</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-blue-600 mt-0.5 font-mono truncate">
               {metrics.totalVolume.toFixed(1)}{' '}
-              <span className="text-xs font-normal text-slate-500 font-sans">Litres/day</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-500 font-sans">Ltr/day</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
             <Milk className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Subscribed Users</p>
-            <p className="text-base sm:text-lg font-semibold text-amber-600 mt-0.5 truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Subscribed Users</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-amber-600 mt-0.5 truncate">
               {metrics.uniqueCustIds}{' '}
-              <span className="text-xs font-normal text-slate-400">Accounts</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400">Accounts</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
             <Users className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
-          <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Subscribed SKUs</p>
-            <p className="text-base sm:text-lg font-semibold text-indigo-600 mt-0.5 truncate">
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between min-w-0">
+          <div className="min-w-0 flex-1 pr-1.5 min-[360px]:pr-2">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Subscribed SKUs</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-indigo-600 mt-0.5 truncate">
               {metrics.uniqueProdIds}{' '}
-              <span className="text-xs font-normal text-slate-400">Products</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400">Products</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
             <Package className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
@@ -236,12 +236,12 @@ export const ScheduleListView: React.FC<ScheduleListViewProps> = ({
             return (
               <div
                 key={s.id}
-                className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-2xs space-y-3"
+                className="bg-white rounded-2xl border border-slate-200/90 p-3 min-[360px]:p-4 shadow-2xs space-y-3"
               >
                 <div className="flex items-start justify-between gap-2.5">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <h3 className="font-semibold text-sm text-slate-900 leading-tight truncate">
+                      <h3 className="font-semibold text-xs min-[360px]:text-sm text-slate-900 leading-tight truncate">
                         {s.customerName}
                       </h3>
                       <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 shrink-0">

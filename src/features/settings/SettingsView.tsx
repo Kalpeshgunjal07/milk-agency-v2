@@ -252,7 +252,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     />
                   </div>
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <input
                         type="file"
                         ref={fileInputRef}
@@ -565,7 +565,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         <p className="text-xs font-mono font-medium text-slate-800">{file.split('\\').pop()}</p>
                         <p className="text-[11px] text-slate-400 font-normal">Encrypted SQLite snapshot</p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <Button
                           size="sm"
                           variant="outline"

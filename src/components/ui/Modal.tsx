@@ -50,7 +50,7 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 md:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-1.5 min-[360px]:p-2.5 sm:p-4 md:p-6 overflow-y-auto">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-900/40 backdrop-blur-2xs transition-opacity"
@@ -67,11 +67,11 @@ export const Modal: React.FC<ModalProps> = ({
         )}
       >
         {/* Header */}
-        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <div className="min-w-0 flex-1 pr-3">
-            <h2 className="text-sm font-semibold text-slate-800 truncate">{title}</h2>
+        <div className="px-3 min-[360px]:px-4 sm:px-6 py-2.5 sm:py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <div className="min-w-0 flex-1 pr-2 min-[360px]:pr-3">
+            <h2 className="text-xs min-[360px]:text-sm font-semibold text-slate-800 truncate">{title}</h2>
             {subtitle && (
-              <p className="text-xs font-normal text-slate-500 mt-0.5 truncate sm:whitespace-normal">
+              <p className="text-[11px] min-[360px]:text-xs font-normal text-slate-500 mt-0.5 truncate sm:whitespace-normal">
                 {subtitle}
               </p>
             )}
@@ -85,7 +85,7 @@ export const Modal: React.FC<ModalProps> = ({
         </div>
 
         {/* Content Body */}
-        <div className="p-3.5 sm:p-5 md:p-6 overflow-y-auto text-xs font-normal">{children}</div>
+        <div className="p-2.5 min-[360px]:p-3.5 sm:p-5 md:p-6 overflow-y-auto text-xs font-normal">{children}</div>
       </div>
     </div>
   );

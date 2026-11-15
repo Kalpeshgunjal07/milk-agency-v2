@@ -661,7 +661,7 @@ export const BillingView: React.FC<BillingViewProps> = ({
                       : 'text-slate-600 hover:text-slate-900 font-normal'
                   }`}
                 >
-                  Image (Default)
+                  <span>Image<span className="hidden min-[380px]:inline"> (Default)</span></span>
                 </button>
                 <button
                   type="button"
@@ -816,17 +816,17 @@ export const BillingView: React.FC<BillingViewProps> = ({
       </div>
 
       {/* DOCUMENT PREVIEW CONTAINER */}
-      <div className="flex justify-center items-start py-4 bg-slate-100/80 rounded-2xl border border-slate-200/80 min-h-[640px]">
+      <div className="flex justify-center items-start py-4 px-2 min-[360px]:px-4 bg-slate-100/80 rounded-2xl border border-slate-200/80 min-h-[640px] overflow-x-hidden">
         {docType === 'daily' && dailyReceiptData ? (
           /* DIGITAL COLOR DELIVERY SLIP (Matches uploaded user mobile screenshot) */
           <div
             id="printable-slip"
-            className="w-full max-w-[380px] bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden font-poppins text-slate-800"
+            className="w-full max-w-full sm:max-w-[380px] bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden font-poppins text-slate-800 mx-auto"
           >
             {/* Top Customizable Color Banner */}
             <div
               style={{ backgroundColor: agencySettings.receipt_header_color || '#00A8E8' }}
-              className="text-white text-center py-4 px-6 transition-colors shadow-2xs"
+              className="text-white text-center py-4 px-4 min-[360px]:px-6 transition-colors shadow-2xs"
             >
               <p className="text-xs font-normal opacity-95">Amount due</p>
               <h2 className="text-2xl font-bold tracking-tight mt-0.5">
@@ -834,7 +834,7 @@ export const BillingView: React.FC<BillingViewProps> = ({
               </h2>
             </div>
 
-            <div className="p-4 space-y-4">
+            <div className="p-3 min-[360px]:p-4 space-y-4">
               {/* Agency Header Row */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 space-y-1">

@@ -500,58 +500,58 @@ export const DailyDeliveryView: React.FC<DailyDeliveryViewProps> = ({
   return (
     <div className="space-y-4 pb-20 md:pb-6">
       {/* 4 Metric Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
-        <div className="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-2">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 min-[360px]:gap-2.5 sm:gap-3.5">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Scheduled</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Scheduled</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
               {metrics.totalScheduledCustomers}{' '}
-              <span className="text-xs font-normal text-slate-400">
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-400">
                 / {rows.length} Total
               </span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
             <Milk className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-2">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Total Volume</p>
-            <p className="text-base sm:text-lg font-semibold text-blue-600 mt-0.5 font-mono truncate">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Total Volume</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-blue-600 mt-0.5 font-mono truncate">
               {metrics.totalVolume.toFixed(2)}{' '}
-              <span className="text-xs font-normal text-slate-500 font-sans">Litres</span>
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-slate-500 font-sans">Ltr</span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
             <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-2">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Day Revenue</p>
-            <p className="text-base sm:text-lg font-semibold text-emerald-600 mt-0.5 font-mono truncate">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Day Revenue</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-emerald-600 mt-0.5 font-mono truncate">
               {formatPaiseAsINR(metrics.totalRevenuePaise)}
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
             <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
 
-        <div className="p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-2">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] sm:text-xs font-normal text-slate-500 truncate">Dispatched</p>
-            <p className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
+            <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-normal text-slate-500 truncate">Dispatched</p>
+            <p className="text-sm min-[360px]:text-base sm:text-lg font-semibold text-slate-900 mt-0.5 truncate">
               {metrics.confirmedCount}{' '}
-              <span className="text-xs font-normal text-emerald-600">
-                Confirmed
+              <span className="text-[10px] min-[360px]:text-xs font-normal text-emerald-600">
+                Done
               </span>
             </p>
           </div>
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
             <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         </div>
@@ -632,7 +632,7 @@ export const DailyDeliveryView: React.FC<DailyDeliveryViewProps> = ({
                 }`}
               >
                 <FileImage className="w-3.5 h-3.5 text-blue-600" />
-                <span>Image (Default)</span>
+                <span>Image<span className="hidden min-[380px]:inline"> (Default)</span></span>
               </button>
               <button
                 type="button"
@@ -863,7 +863,7 @@ export const DailyDeliveryView: React.FC<DailyDeliveryViewProps> = ({
                 </div>
 
                 {/* Card Footer: Total Amount & Slip Actions */}
-                <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100 gap-2">
+                <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-center justify-between text-xs pt-2 border-t border-slate-100 gap-2">
                   <div className="min-w-0 flex-1">
                     <span className="text-[10px] text-slate-400 block truncate">Total Due</span>
                     <span className="font-mono font-bold text-base text-blue-700 truncate block">
@@ -874,7 +874,7 @@ export const DailyDeliveryView: React.FC<DailyDeliveryViewProps> = ({
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-1.5 shrink-0">
+                  <div className="flex items-center gap-1.5 flex-wrap justify-end">
                     {modifiedCustomerIds.has(r.customerId) && (
                       <button
                         onClick={() => handleSaveSingleCustomer(r.customerId)}

@@ -146,51 +146,51 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </div>
 
       {/* KPI Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 min-[360px]:gap-2.5 sm:gap-4">
         {/* Active Customers */}
-        <div className="p-3 sm:p-4 bg-white rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between gap-2">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-normal text-slate-500 truncate">Active Customers</p>
-            <p className="text-base sm:text-xl font-semibold text-slate-800 mt-0.5 truncate">{activeCustomersCount}</p>
-            <span className="text-[11px] text-blue-600 font-normal truncate block">Local SQLite</span>
+            <p className="text-[10px] min-[360px]:text-xs font-normal text-slate-500 truncate">Active Customers</p>
+            <p className="text-sm min-[360px]:text-base sm:text-xl font-semibold text-slate-800 mt-0.5 truncate">{activeCustomersCount}</p>
+            <span className="text-[10px] min-[360px]:text-[11px] text-blue-600 font-normal truncate block">Local SQLite</span>
           </div>
-          <div className="p-2 sm:p-2.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
+          <div className="p-1.5 min-[360px]:p-2 sm:p-2.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
             <Users className="w-4 h-4" />
           </div>
         </div>
 
         {/* Today's Sales */}
-        <div className="p-3 sm:p-4 bg-white rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between gap-2">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-normal text-slate-500 truncate">Today's Sales</p>
-            <p className="text-base sm:text-xl font-semibold text-slate-800 mt-0.5 font-mono truncate">{formatPaiseAsINR(todaySalesPaise)}</p>
-            <span className="text-[11px] text-slate-400 font-normal truncate block">{todayDeliveriesCount} deliveries</span>
+            <p className="text-[10px] min-[360px]:text-xs font-normal text-slate-500 truncate">Today's Sales</p>
+            <p className="text-sm min-[360px]:text-base sm:text-xl font-semibold text-slate-800 mt-0.5 font-mono truncate">{formatPaiseAsINR(todaySalesPaise)}</p>
+            <span className="text-[10px] min-[360px]:text-[11px] text-slate-400 font-normal truncate block">{todayDeliveriesCount} deliveries</span>
           </div>
-          <div className="p-2 sm:p-2.5 bg-indigo-50 text-indigo-600 rounded-lg shrink-0">
+          <div className="p-1.5 min-[360px]:p-2 sm:p-2.5 bg-indigo-50 text-indigo-600 rounded-lg shrink-0">
             <TrendingUp className="w-4 h-4" />
           </div>
         </div>
 
         {/* Today's Collections */}
-        <div className="p-3 sm:p-4 bg-white rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between gap-2">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-normal text-slate-500 truncate">Today's Collected</p>
-            <p className="text-base sm:text-xl font-semibold text-emerald-600 mt-0.5 font-mono truncate">{formatPaiseAsINR(todayCollectionsPaise)}</p>
-            <span className="text-[11px] text-emerald-600 font-normal truncate block">{todayPayments.length} receipts</span>
+            <p className="text-[10px] min-[360px]:text-xs font-normal text-slate-500 truncate">Today's Collected</p>
+            <p className="text-sm min-[360px]:text-base sm:text-xl font-semibold text-emerald-600 mt-0.5 font-mono truncate">{formatPaiseAsINR(todayCollectionsPaise)}</p>
+            <span className="text-[10px] min-[360px]:text-[11px] text-emerald-600 font-normal truncate block">{todayPayments.length} receipts</span>
           </div>
-          <div className="p-2 sm:p-2.5 bg-emerald-50 text-emerald-600 rounded-lg shrink-0">
+          <div className="p-1.5 min-[360px]:p-2 sm:p-2.5 bg-emerald-50 text-emerald-600 rounded-lg shrink-0">
             <CreditCard className="w-4 h-4" />
           </div>
         </div>
 
         {/* Total Outstanding */}
-        <div className="p-3 sm:p-4 bg-white rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between gap-2">
+        <div className="p-2.5 min-[360px]:p-3 sm:p-4 bg-white rounded-xl border border-slate-200/80 shadow-2xs flex items-center justify-between gap-1.5 min-[360px]:gap-2 min-w-0">
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-normal text-slate-500 truncate">Total Outstanding</p>
-            <p className="text-base sm:text-xl font-semibold text-rose-600 mt-0.5 font-mono truncate">{formatPaiseAsINR(totalOutstandingPaise)}</p>
-            <span className="text-[11px] text-rose-500 font-normal truncate block">Customer dues</span>
+            <p className="text-[10px] min-[360px]:text-xs font-normal text-slate-500 truncate">Total Outstanding</p>
+            <p className="text-sm min-[360px]:text-base sm:text-xl font-semibold text-rose-600 mt-0.5 font-mono truncate">{formatPaiseAsINR(totalOutstandingPaise)}</p>
+            <span className="text-[10px] min-[360px]:text-[11px] text-rose-500 font-normal truncate block">Customer dues</span>
           </div>
-          <div className="p-2 sm:p-2.5 bg-rose-50 text-rose-600 rounded-lg shrink-0">
+          <div className="p-1.5 min-[360px]:p-2 sm:p-2.5 bg-rose-50 text-rose-600 rounded-lg shrink-0">
             <AlertTriangle className="w-4 h-4" />
           </div>
         </div>
@@ -225,9 +225,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* 7-Day Performance Chart */}
         <Card className="col-span-1 md:col-span-2">
           <CardHeader>
-            <div className="flex items-center justify-between w-full">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 w-full">
               <CardTitle className="text-xs font-semibold">7-Day Sales vs Collections (₹)</CardTitle>
-              <div className="flex items-center gap-4 text-xs font-normal">
+              <div className="flex items-center gap-3 sm:gap-4 text-xs font-normal">
                 <span className="flex items-center gap-1.5 text-blue-600">
                   <span className="w-2 h-2 rounded-full bg-blue-600" /> Sales
                 </span>
